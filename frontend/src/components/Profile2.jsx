@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { memo, useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import GitGraph from "./GitGraph";
 
@@ -27,6 +27,67 @@ import { toast } from "react-toastify";
 import ReadMore from "./Readmore";
 
 const API = import.meta.env.VITE_API_URL;
+const PostItem=memo(function PostItem({item, idx, isOwnProfile, delepost, setexpandedImage}) {
+  return  <div
+                              key={idx}
+                              className="bg-muted/30 border border-border rounded-lg overflow-hidden hover:border-primary/50 hover:shadow-md transition-all duration-200 group"
+                            >
+                              <div className="flex gap-4 p-4">
+                                <div className="h-3 w-3 rounded-full bg-green-500 flex-shrink-0 mt-1 group-hover:scale-110 transition-transform" />
+                                <div className="flex-1 min-w-0">
+                                  <ReadMore text={item.desc} className="flex-1" />
+                                </div>
+                                
+                                {isOwnProfile() && (
+                                  <div className="flex items-center gap-2 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      className="text-blue-500 hover:text-blue-600 hover:bg-blue-500/10"
+                                    >
+                                      <Edit2 size={16} />
+                                    </Button>
+                                    <AlertDialog>
+                                      <AlertDialogTrigger asChild>
+                                        <Button
+                                          variant="ghost"
+                                          size="sm"
+                                          className="text-red-500 hover:text-red-600 hover:bg-red-500/10"
+                                        >
+                                          <Trash2 size={16} />
+                                        </Button>
+                                      </AlertDialogTrigger>
+                                      <AlertDialogContent className="bg-card border-border">
+                                        <AlertDialogTitle>Delete Post</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                          Are you sure you want to delete this post? This action cannot be undone.
+                                        </AlertDialogDescription>
+                                        <div className="flex gap-3 justify-end">
+                                          <AlertDialogCancel className="border-border">Cancel</AlertDialogCancel>
+                                          <AlertDialogAction
+                                            onClick={() => delepost(item._id)}
+                                            className="bg-red-600 hover:bg-red-700"
+                                          >
+                                            Delete
+                                          </AlertDialogAction>
+                                        </div>
+                                      </AlertDialogContent>
+                                    </AlertDialog>
+                                  </div>
+                                )}
+                              </div>
+                              {item?.img && (
+                                <div className="px-4 pb-4">
+                                  <img
+                                    src={item.img}
+                                    alt="post"
+                                    className="w-full max-h-96 object-contain rounded-lg bg-black cursor-pointer hover:opacity-90 transition-opacity"
+                                    onClick={() => setexpandedImage(item.img)}
+                                  />
+                                </div>
+                              )}
+                            </div>
+})
 
 const Profile = () => {
   const { id } = useParams();
@@ -45,13 +106,13 @@ const Profile = () => {
   const [notesMap, setNotesMap] = useState({});
   const [dirdata, setdirdata] = useState([]);
 
-  const isOwnProfile = () => {
+    const isOwnProfile = useCallback(() => {
     if (!user || !id) return false;
     if (user._id === id) return true;
     if (user.email && user.email === id) return true;
     if (user.username && user.username === id) return true;
     return false;
-  };
+  }, [user, id]);
 
   const getnotes = async (id) => {
     setOpenDir(openDir === id ? null : id);
@@ -304,65 +365,73 @@ const Profile = () => {
                       {listdata && listdata.length > 0 ? (
                         <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-primary/50 scrollbar-track-muted">
                           {listdata.map((item, idx) => (
-                            <div
-                              key={idx}
-                              className="bg-muted/30 border border-border rounded-lg overflow-hidden hover:border-primary/50 hover:shadow-md transition-all duration-200 group"
-                            >
-                              <div className="flex gap-4 p-4">
-                                <div className="h-3 w-3 rounded-full bg-green-500 flex-shrink-0 mt-1 group-hover:scale-110 transition-transform" />
-                                <div className="flex-1 min-w-0">
-                                  <ReadMore text={item.desc} className="flex-1" />
-                                </div>
+                            // <div
+                            //   key={idx}
+                            //   className="bg-muted/30 border border-border rounded-lg overflow-hidden hover:border-primary/50 hover:shadow-md transition-all duration-200 group"
+                            // >
+                            //   <div className="flex gap-4 p-4">
+                            //     <div className="h-3 w-3 rounded-full bg-green-500 flex-shrink-0 mt-1 group-hover:scale-110 transition-transform" />
+                            //     <div className="flex-1 min-w-0">
+                            //       <ReadMore text={item.desc} className="flex-1" />
+                            //     </div>
                                 
-                                {isOwnProfile() && (
-                                  <div className="flex items-center gap-2 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <Button
-                                      variant="ghost"
-                                      size="sm"
-                                      className="text-blue-500 hover:text-blue-600 hover:bg-blue-500/10"
-                                    >
-                                      <Edit2 size={16} />
-                                    </Button>
-                                    <AlertDialog>
-                                      <AlertDialogTrigger asChild>
-                                        <Button
-                                          variant="ghost"
-                                          size="sm"
-                                          className="text-red-500 hover:text-red-600 hover:bg-red-500/10"
-                                        >
-                                          <Trash2 size={16} />
-                                        </Button>
-                                      </AlertDialogTrigger>
-                                      <AlertDialogContent className="bg-card border-border">
-                                        <AlertDialogTitle>Delete Post</AlertDialogTitle>
-                                        <AlertDialogDescription>
-                                          Are you sure you want to delete this post? This action cannot be undone.
-                                        </AlertDialogDescription>
-                                        <div className="flex gap-3 justify-end">
-                                          <AlertDialogCancel className="border-border">Cancel</AlertDialogCancel>
-                                          <AlertDialogAction
-                                            onClick={() => delepost(item._id)}
-                                            className="bg-red-600 hover:bg-red-700"
-                                          >
-                                            Delete
-                                          </AlertDialogAction>
-                                        </div>
-                                      </AlertDialogContent>
-                                    </AlertDialog>
-                                  </div>
-                                )}
-                              </div>
-                              {item.img && (
-                                <div className="px-4 pb-4">
-                                  <img
-                                    src={item.img}
-                                    alt="post"
-                                    className="w-full max-h-96 object-contain rounded-lg bg-black cursor-pointer hover:opacity-90 transition-opacity"
-                                    onClick={() => setexpandedImage(item.img)}
-                                  />
-                                </div>
-                              )}
-                            </div>
+                            //     {isOwnProfile() && (
+                            //       <div className="flex items-center gap-2 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                            //         <Button
+                            //           variant="ghost"
+                            //           size="sm"
+                            //           className="text-blue-500 hover:text-blue-600 hover:bg-blue-500/10"
+                            //         >
+                            //           <Edit2 size={16} />
+                            //         </Button>
+                            //         <AlertDialog>
+                            //           <AlertDialogTrigger asChild>
+                            //             <Button
+                            //               variant="ghost"
+                            //               size="sm"
+                            //               className="text-red-500 hover:text-red-600 hover:bg-red-500/10"
+                            //             >
+                            //               <Trash2 size={16} />
+                            //             </Button>
+                            //           </AlertDialogTrigger>
+                            //           <AlertDialogContent className="bg-card border-border">
+                            //             <AlertDialogTitle>Delete Post</AlertDialogTitle>
+                            //             <AlertDialogDescription>
+                            //               Are you sure you want to delete this post? This action cannot be undone.
+                            //             </AlertDialogDescription>
+                            //             <div className="flex gap-3 justify-end">
+                            //               <AlertDialogCancel className="border-border">Cancel</AlertDialogCancel>
+                            //               <AlertDialogAction
+                            //                 onClick={() => delepost(item._id)}
+                            //                 className="bg-red-600 hover:bg-red-700"
+                            //               >
+                            //                 Delete
+                            //               </AlertDialogAction>
+                            //             </div>
+                            //           </AlertDialogContent>
+                            //         </AlertDialog>
+                            //       </div>
+                            //     )}
+                            //   </div>
+                            //   {item.img && (
+                            //     <div className="px-4 pb-4">
+                            //       <img
+                            //         src={item.img}
+                            //         alt="post"
+                            //         className="w-full max-h-96 object-contain rounded-lg bg-black cursor-pointer hover:opacity-90 transition-opacity"
+                            //         onClick={() => setexpandedImage(item.img)}
+                            //       />
+                            //     </div>
+                            //   )}
+                            // </div>
+                           <PostItem
+  key={item._id}
+  item={item}
+  isOwnProfile={isOwnProfile}  // boolean
+  delepost={delepost}
+  setexpandedImage={setexpandedImage}
+/>
+
                           ))}
                         </div>
                       ) : (

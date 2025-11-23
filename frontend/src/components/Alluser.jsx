@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Award, Mail, BookOpen, FileText } from 'lucide-react';
@@ -10,6 +10,106 @@ import { toast } from 'react-toastify';
 import GitGraph from './GitGraph';
 
 const API = import.meta.env.VITE_API_URL;
+const GetAlluser=memo(function GetAlluser({user,navigate,league,userInitials}){
+  return <Card
+                  // key={user._id}
+                  className="bg-card border-border hover:border-primary/50 transition-all duration-200 overflow-hidden"
+                >
+                
+                  <CardContent className="p-0">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6 p-4 sm:p-5">
+                      {/* Left Side - Profile Info */}
+                      <div className="space-y-3 sm:space-y-4">
+                        {/* Avatar and Name */}
+                        <div className="flex flex-col items-center sm:items-start gap-2 sm:gap-3">
+                          <Avatar className="h-16 w-16 sm:h-20 sm:w-20 border-2 border-primary">
+                            <AvatarImage src='https://api-assets.clashofclans.com/leagues/288/U2acNDRaR5rQDu4Z6pQKaGcjWm9dkSnHMAPZCXrHPB4.png'  alt={user.username} />
+                            <AvatarFallback className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground font-bold text-sm">
+                              {userInitials}
+                            </AvatarFallback>
+                          </Avatar>
+
+                          <div className="text-center sm:text-left flex-1 min-w-0">
+                            <h3 className="text-base sm:text-lg font-bold text-foreground truncate">
+                              {user.username}
+                            </h3>
+                            <div className="flex items-center gap-1 mt-1 justify-center sm:justify-start min-w-0">
+                              <Mail className="w-3 h-3 sm:w-4 sm:h-4 text-muted-foreground flex-shrink-0" />
+                              <p className="text-xs text-muted-foreground truncate">
+                                {user.email}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* League Badge */}
+                        <Badge className={`${league.color} w-full text-center justify-center py-1 text-xs sm:text-sm`}>
+                          {league.league}
+                        </Badge>
+
+                        {/* Stats Grid */}
+                        <div className="grid grid-cols-2 gap-2">
+                          <div className="bg-muted/50 rounded-lg p-2 sm:p-3 text-center border border-border/50">
+                            <Award className="w-3 h-3 sm:w-4 sm:h-4 mx-auto text-primary mb-1" />
+                            <p className="text-sm sm:text-base font-bold text-primary">
+                              {user.submission?.length || 0}
+                            </p>
+                            <p className="text-xs text-muted-foreground">Submissions</p>
+                          </div>
+                          <div className="bg-muted/50 rounded-lg p-2 sm:p-3 text-center border border-border/50">
+                            <span className="text-sm sm:text-base font-bold text-primary">✨</span>
+                            <p className="text-sm sm:text-base font-bold text-primary">
+                              {(user.submission?.length / 30).toFixed(1) || 0}
+                            </p>
+                            <p className="text-xs text-muted-foreground">Monthly</p>
+                          </div>
+                        </div>
+
+                        {/* View Profile Button */}
+                        <Button
+                          onClick={() => navigate(`/profile/${user._id}`)}
+                          className="w-full bg-primary hover:bg-primary/90 text-sm py-2 h-9"
+                        >
+                          View Profile
+                        </Button>
+                      </div>
+
+                      {/* Right Side - Contribution Graph */}
+                      <div className="sm:col-span-1 lg:col-span-2">
+                        <div className="bg-muted/20 rounded-lg border border-border/50 p-2 sm:p-3 overflow-x-auto max-h-[400px]">
+                          <h4 className="text-xs sm:text-sm font-semibold text-foreground mb-2">
+                            📊 Contributions
+                          </h4>
+                          <div className="scale-75 sm:scale-90 lg:scale-100 origin-top-left">
+                            <GitGraph activeDays={user.submission || []} />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Bottom Stats Bar */}
+                    {/* <div className="border-t border-border/50 bg-muted/30 px-4 sm:px-5 py-2 sm:py-3 flex flex-wrap gap-2 sm:gap-4 text-xs text-muted-foreground">
+                      <div className="flex items-center gap-1 sm:gap-2">
+                        <BookOpen className="w-3 h-3 sm:w-4 sm:h-4 text-primary" />
+                        <span className="text-xs">{user.notes?.length || 0} notes</span>
+                      </div>
+                      <div className="flex items-center gap-1 sm:gap-2">
+                        <FileText className="w-3 h-3 sm:w-4 sm:h-4 text-primary" />
+                        <span className="text-xs">{user.posts?.length || 0} posts</span>
+                      </div>
+                      <div className="flex items-center gap-1 sm:gap-2 ml-auto text-muted-foreground text-xs">
+                        <span>
+                          {new Date(user.createdAt).toLocaleDateString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                          })}
+                        </span>
+                      </div>
+                    </div> */}
+                  </CardContent>
+                </Card>
+});
+GetAlluser.displayName = "GetAlluser";
 
 export default function Alluser() {
   const navigate = useNavigate();
@@ -118,103 +218,8 @@ export default function Alluser() {
               const userInitials = getUserInitials(user.username);
 
               return (
-                <Card
-                  key={user._id}
-                  className="bg-card border-border hover:border-primary/50 transition-all duration-200 overflow-hidden"
-                >
                 
-                  <CardContent className="p-0">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6 p-4 sm:p-5">
-                      {/* Left Side - Profile Info */}
-                      <div className="space-y-3 sm:space-y-4">
-                        {/* Avatar and Name */}
-                        <div className="flex flex-col items-center sm:items-start gap-2 sm:gap-3">
-                          <Avatar className="h-16 w-16 sm:h-20 sm:w-20 border-2 border-primary">
-                            <AvatarImage src='https://api-assets.clashofclans.com/leagues/288/U2acNDRaR5rQDu4Z6pQKaGcjWm9dkSnHMAPZCXrHPB4.png'  alt={user.username} />
-                            <AvatarFallback className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground font-bold text-sm">
-                              {userInitials}
-                            </AvatarFallback>
-                          </Avatar>
-
-                          <div className="text-center sm:text-left flex-1 min-w-0">
-                            <h3 className="text-base sm:text-lg font-bold text-foreground truncate">
-                              {user.username}
-                            </h3>
-                            <div className="flex items-center gap-1 mt-1 justify-center sm:justify-start min-w-0">
-                              <Mail className="w-3 h-3 sm:w-4 sm:h-4 text-muted-foreground flex-shrink-0" />
-                              <p className="text-xs text-muted-foreground truncate">
-                                {user.email}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* League Badge */}
-                        <Badge className={`${league.color} w-full text-center justify-center py-1 text-xs sm:text-sm`}>
-                          {league.league}
-                        </Badge>
-
-                        {/* Stats Grid */}
-                        <div className="grid grid-cols-2 gap-2">
-                          <div className="bg-muted/50 rounded-lg p-2 sm:p-3 text-center border border-border/50">
-                            <Award className="w-3 h-3 sm:w-4 sm:h-4 mx-auto text-primary mb-1" />
-                            <p className="text-sm sm:text-base font-bold text-primary">
-                              {user.submission?.length || 0}
-                            </p>
-                            <p className="text-xs text-muted-foreground">Submissions</p>
-                          </div>
-                          <div className="bg-muted/50 rounded-lg p-2 sm:p-3 text-center border border-border/50">
-                            <span className="text-sm sm:text-base font-bold text-primary">✨</span>
-                            <p className="text-sm sm:text-base font-bold text-primary">
-                              {(user.submission?.length / 30).toFixed(1) || 0}
-                            </p>
-                            <p className="text-xs text-muted-foreground">Monthly</p>
-                          </div>
-                        </div>
-
-                        {/* View Profile Button */}
-                        <Button
-                          onClick={() => navigate(`/profile/${user._id}`)}
-                          className="w-full bg-primary hover:bg-primary/90 text-sm py-2 h-9"
-                        >
-                          View Profile
-                        </Button>
-                      </div>
-
-                      {/* Right Side - Contribution Graph */}
-                      <div className="sm:col-span-1 lg:col-span-2">
-                        <div className="bg-muted/20 rounded-lg border border-border/50 p-2 sm:p-3 overflow-x-auto max-h-[400px]">
-                          <h4 className="text-xs sm:text-sm font-semibold text-foreground mb-2">
-                            📊 Contributions
-                          </h4>
-                          <div className="scale-75 sm:scale-90 lg:scale-100 origin-top-left">
-                            <GitGraph activeDays={user.submission || []} />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Bottom Stats Bar */}
-                    {/* <div className="border-t border-border/50 bg-muted/30 px-4 sm:px-5 py-2 sm:py-3 flex flex-wrap gap-2 sm:gap-4 text-xs text-muted-foreground">
-                      <div className="flex items-center gap-1 sm:gap-2">
-                        <BookOpen className="w-3 h-3 sm:w-4 sm:h-4 text-primary" />
-                        <span className="text-xs">{user.notes?.length || 0} notes</span>
-                      </div>
-                      <div className="flex items-center gap-1 sm:gap-2">
-                        <FileText className="w-3 h-3 sm:w-4 sm:h-4 text-primary" />
-                        <span className="text-xs">{user.posts?.length || 0} posts</span>
-                      </div>
-                      <div className="flex items-center gap-1 sm:gap-2 ml-auto text-muted-foreground text-xs">
-                        <span>
-                          {new Date(user.createdAt).toLocaleDateString('en-US', {
-                            month: 'short',
-                            day: 'numeric',
-                          })}
-                        </span>
-                      </div>
-                    </div> */}
-                  </CardContent>
-                </Card>
+                <GetAlluser key={user._id} user={user} navigate={navigate} league={league} userInitials={userInitials} />
               );
             })}
           </div>
