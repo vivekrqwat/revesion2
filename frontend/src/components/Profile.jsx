@@ -135,7 +135,7 @@ console.log("Local Usegur");
         <CardHeader className="pb-3 text-center">
           <div className="flex justify-center mb-3">
             <Avatar className="h-16 w-16 border-2 border-primary">
-              <AvatarImage src='../public/BronzeI.webp' alt={username} />
+              <AvatarImage src='https://api-assets.clashofclans.com/leagues/288/U2acNDRaR5rQDu4Z6pQKaGcjWm9dkSnHMAPZCXrHPB4.png' alt={username} />
               <AvatarFallback className="bg-primary text-primary-foreground font-bold">
                 {userInitials}
               </AvatarFallback>
