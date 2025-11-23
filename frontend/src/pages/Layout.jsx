@@ -3,6 +3,7 @@ import Navbar from "../components/Nav";
 import ProfileRight from "../components/Profile";
 import SideLeft from "../components/Sideleft";
 import { Outlet } from "react-router-dom";
+import { FaBars, FaTimes } from "react-icons/fa";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
 // export function Layout() {
