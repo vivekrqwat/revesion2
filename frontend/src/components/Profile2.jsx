@@ -1,8 +1,8 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import GitGraph from "./GitGraph";
-import scientist from "../avatar/scientist.png";
+import GitGraph from "@/GitGraph";
+
 import { UserStore } from "../store/Userstroe";
 import { Trash2, Edit2, Award, MessageSquare, Share2 } from "lucide-react";
 import { FiChevronDown } from "react-icons/fi";
@@ -24,7 +24,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { toast } from "react-toastify";
-import ReadMore from "./Readmore";
+import ReadMore from "@/Readmore";
 
 const API = import.meta.env.VITE_API_URL;
 
