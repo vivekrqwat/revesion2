@@ -4,18 +4,18 @@ import { useEffect, useState } from 'react';
 import { UserStore } from './store/Userstroe.jsx';
 
 import { Layout } from './pages/Layout';
-import HomePage from './Components/Mainpage.jsx';
+import HomePage from '@/Components/MainBox.jsx';
 import Discussion from './Components/Disscusiono.jsx';
 import Directory from './Components/Directory.jsx';
 import Notes from './Components/Notes.jsx';
 import Signup from './pages/Signup.jsx';
 import Login from './pages/login.jsx';
 import Loading from './pages/Loading.jsx';
-import Collaborative from './Components/Collaborative.jsx';
+import Collaborative from '@/Components/Collaborative.jsx';
 import ProfilePage from './pages/profilepage.jsx';
 import { ToastContainer } from 'react-toastify';
-import AllDir from './Components/AllDir.jsx';
-import Alluser from './Components/Alluser.jsx';
+import AllDir from '@/Components/AllDir.jsx';
+import Alluser from '@/Components/Alluser.jsx';
 
 // export default function App() {
 //   const { user, checkAuth, initializeUser, loading } = UserStore();
