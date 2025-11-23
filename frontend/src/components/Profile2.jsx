@@ -88,6 +88,7 @@ const PostItem=memo(function PostItem({item, idx, isOwnProfile, delepost, setexp
                               )}
                             </div>
 })
+//hi
 
 const Profile = () => {
   const { id } = useParams();
