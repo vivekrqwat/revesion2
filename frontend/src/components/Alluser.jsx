@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Award, Mail, BookOpen, FileText } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card.tsx';
+import { Badge } from '@/components/ui/badge.tsx';
+import { Button } from '@/components/ui/button.tsx';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar.tsx';
 import { toast } from 'react-toastify';
 import GitGraph from './GitGraph';
 
@@ -18,7 +18,7 @@ export default function Alluser() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredUsers, setFilteredUsers] = useState([]);
 
-  // Fetch all users
+  // Fetch all userssla;
   useEffect(() => {
     const fetchUsers = async () => {
       try {
