@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import Navbar from "../Components/Nav";
-import ProfileRight from "../Components/Profile";
-import SideLeft from "../Components/Sideleft";
+import Navbar from "../components/Nav";
+import ProfileRight from "../components/Profile";
+import SideLeft from "../components/Sideleft";
 import { Outlet } from "react-router-dom";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+// import { ChevronLeft, ChevronRight } from "lucide-react";
+// import { Button } from "@/components/ui/button";
 
 export function Layout() {
   // const [isSidebarVisible, setIsSidebarVisible] = useState(() => {
