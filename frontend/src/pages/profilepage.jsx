@@ -1,7 +1,7 @@
 
 
-import Navbar from "../Components/Nav";
-import Profile from "../Components/Profile2";
+import Navbar from "../components/Nav";
+import Profile from "../components/Profile2";
 
 export default function ProfilePage() {
   return (
