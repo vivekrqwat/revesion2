@@ -3,67 +3,56 @@ import Navbar from "../components/Nav";
 import ProfileRight from "../components/Profile";
 import SideLeft from "../components/Sideleft";
 import { Outlet } from "react-router-dom";
-// import { ChevronLeft, ChevronRight } from "lucide-react";
-// import { Button } from "@/components/ui/button";
+import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
 export function Layout() {
-  // const [isSidebarVisible, setIsSidebarVisible] = useState(() => {
-  //   // Initialize from localStorage
-  //   const saved = localStorage.getItem("sidebarVisible");
-  //   return saved !== null ? JSON.parse(saved) : true;
-  // });
+  const [isSidebarVisible, setIsSidebarVisible] = useState(() => {
+    // Initialize from localStorage
+    const saved = localStorage.getItem("sidebarVisible");
+    return saved !== null ? JSON.parse(saved) : true;
+  });
 
   // Persist sidebar state to localStorage
-  // useEffect(() => {
-  //   localStorage.setItem("sidebarVisible", JSON.stringify(isSidebarVisible));
-  // }, [isSidebarVisible]);
+  useEffect(() => {
+    localStorage.setItem("sidebarVisible", JSON.stringify(isSidebarVisible));
+  }, [isSidebarVisible]);
 
   // Auto-show sidebar on desktop when window is resized
-  // useEffect(() => {
-  //   const handleResize = () => {
-  //     const isDesktop = window.innerWidth >= 768; // md breakpoint
-  //     if (isDesktop) {
-  //       setIsSidebarVisible(true);
-  //     }
-  //   };
+  useEffect(() => {
+    const handleResize = () => {
+      const isDesktop = window.innerWidth >= 768; // md breakpoint
+      if (isDesktop) {
+        setIsSidebarVisible(true);
+      }
+    };
 
-  //   window.addEventListener("resize", handleResize);
-  //   return () => window.removeEventListener("resize", handleResize);
-  // }, []);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
     <div className="flex h-screen w-full bg-background text-foreground">
       {/* Sidebar */}
-      <aside
-  className="
-    w-20 sm:w-56
-  
-    overflow-hidden
-    bg-card
-    border-r border-border
-    shadow-sm
-  "
+<aside
+  className={`
+    transition-all duration-500 ease-in-out
+    ${isSidebarVisible
+      ? "w-12 sm:w-14 md:w-16 lg:w-20 xl:w-[9%] opacity-100"
+      : "w-0 opacity-0"
+    }
+    overflow-hidden bg-card border-r border-border shadow-lg
+  `}
 >
   <SideLeft />
 </aside>
 
       {/* Toggle Button */}
-      {/* <Button
-  onClick={() => setIsSidebarVisible(!isSidebarVisible)}
-  variant="outline"
-  size="icon"
-  className="
-    h-10 w-10
-    fixed top-4 left-2 z-50
-    rounded-md border border-border
-    bg-card hover:bg-card/80
-    text-primary
-    md:hidden
-  "
-  aria-label={isSidebarVisible ? "Hide sidebar" : "Show sidebar"}
->
-  {isSidebarVisible ? "×" : "≡"}
-</Button> */}
+      <div
+        className="flex flex-col justify-center items-center w-2 bg-background text-white cursor-pointer md:hidden"
+        onClick={() => setIsSidebarVisible(!isSidebarVisible)}
+      >
+        {isSidebarVisible ? <FaArrowLeft /> : <FaArrowRight />}
+      </div>
 
 
       {/* Main Content */}
