@@ -4,12 +4,12 @@ import { useEffect, useState } from 'react';
 import { UserStore } from './store/Userstroe.jsx';
 
 import { Layout } from './pages/Layout';
-import HomePage from './Components/MainBox';
-import Discussion from './Components/Disscusiono';
-import Directory from './Components/Directory';
-import Notes from './Components/Notes';
-import Signup from './pages/Signup';
-import Login from './pages/login';
+import HomePage from './Components/Mainpage.jsx';
+import Discussion from './Components/Disscusiono.jsx';
+import Directory from './Components/Directory.jsx';
+import Notes from './Components/Notes.jsx';
+import Signup from './pages/Signup.jsx';
+import Login from './pages/login.jsx';
 import Loading from './pages/Loading.jsx';
 import Collaborative from './Components/Collaborative.jsx';
 import ProfilePage from './pages/profilepage.jsx';
