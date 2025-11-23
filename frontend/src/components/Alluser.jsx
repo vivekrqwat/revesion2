@@ -130,7 +130,7 @@ export default function Alluser() {
                         {/* Avatar and Name */}
                         <div className="flex flex-col items-center sm:items-start gap-2 sm:gap-3">
                           <Avatar className="h-16 w-16 sm:h-20 sm:w-20 border-2 border-primary">
-                            <AvatarImage src='../public/BronzeI.webp' alt={user.username} />
+                            <AvatarImage src='https://static.wikia.nocookie.net/clashofclans/images/3/38/BronzeI.png/revision/latest?cb=20150728164349'  alt={user.username} />
                             <AvatarFallback className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground font-bold text-sm">
                               {userInitials}
                             </AvatarFallback>

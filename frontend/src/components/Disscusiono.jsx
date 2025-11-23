@@ -192,7 +192,7 @@ export default function Discussion() {
                       className="h-8 w-8 cursor-pointer hover:opacity-80 transition-opacity"
                       onClick={() => handleAvatarClick(p.uid || p._id)}
                     >
-                     <AvatarImage src='../public/BronzeI.webp'  alt={p.username}/>
+                     <AvatarImage src='https://static.wikia.nocookie.net/clashofclans/images/3/38/BronzeI.png/revision/latest?cb=20150728164349'  alt={p.username}/>
                       
                       {/* <AvatarFallback className="bg-primary text-primary-foreground text-xs font-semibold">
                         {p.username

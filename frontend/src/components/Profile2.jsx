@@ -211,7 +211,7 @@ const Profile = () => {
                 <CardContent className="pt-0 pb-6">
                   <div className="flex flex-col items-center text-center space-y-4 -mt-12 relative z-10">
                     <Avatar className="h-28 w-28 border-4 border-card shadow-md">
-                      <AvatarImage src='../public/BronzeI.webp' alt={userdata?.username} />
+                      <AvatarImage src='https://static.wikia.nocookie.net/clashofclans/images/3/38/BronzeI.png/revision/latest?cb=20150728164349' alt={userdata?.username} />
                       <AvatarFallback className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground text-xl font-bold" >
                         {userInitials}
                       </AvatarFallback>
