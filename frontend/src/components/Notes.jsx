@@ -44,6 +44,8 @@ export default function Notes() {
   const [imgsrc, setimgsrc] = useState('');
   const { user } = UserStore();
   const [isOwner, setIsOwner] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
+     const [filteredNotes, setFilteredNotes] = useState([]);
   const [formData, setFormData] = useState({
     heading: '',
     desc: '',
@@ -63,6 +65,20 @@ export default function Notes() {
       setIsOwner(false);
     }
   }, [paramsUserId, user?._id]);
+
+   // Handle search
+   useEffect(() => {
+  if (!searchTerm.trim()) {
+    setFilteredNotes(contentdata);
+  } else {
+    const filtered = contentdata.filter(
+      (note) =>
+        note.heading?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        note.desc?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredNotes(filtered);
+  }
+}, [searchTerm, contentdata]);
   
 
   const edit = (idx) => {
@@ -251,6 +267,19 @@ export default function Notes() {
           )}
         </div>
 
+        {/* Search Bar */}
+                <Card className="bg-card border-border">
+                  <CardContent className="pt-6">
+                    <input
+                      type="text"
+                      placeholder="Search by username or email..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="w-full px-4 py-2 rounded-lg bg-muted border border-border text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    />
+                  </CardContent>
+                </Card>
+
         {showForm && isOwner && (
           <Card className="bg-card border-border">
             <CardHeader>
@@ -357,7 +386,7 @@ export default function Notes() {
         )}
 
         <div className="space-y-4 max-h-[80vh] overflow-y-auto pr-2">
-          {contentdata.map((note, idx) => (
+          {filteredNotes.map((note, idx) => (
             <Card
               key={idx}
               className="bg-card border-border hover:border-primary/50 transition-colors"
@@ -413,15 +442,13 @@ export default function Notes() {
                     </div>
                   </div>
                 ) : (
-                  <p
-                    onClick={() => isOwner && edit(idx)}
-                    className={`text-base text-muted-foreground whitespace-pre-wrap leading-relaxed ${
-                      isOwner ? 'cursor-pointer hover:text-foreground transition-colors' : 'cursor-default'
-                    }`}
-                  >
-                    {/* {note.desc} */}
-                    <ReadMore text={note.desc} onEdit={isOwner ? () => edit(idx) : null} />
-                  </p>
+                 <div
+  onClick={() => isOwner && edit(idx)}
+  className="text-base text-muted-foreground whitespace-pre-wrap leading-relaxed
+  cursor-pointer hover:text-foreground transition-colors"
+>
+  <ReadMore text={note.desc} onEdit={isOwner ? () => edit(idx) : null} />
+</div>
                 )}
 
                 {note.Approach && (

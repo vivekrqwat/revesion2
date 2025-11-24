@@ -69,6 +69,7 @@ function AllDir() {
       const res = await axios.get(`${API}/apii/dir/allone`, {
         withCredentials: true,
       });
+      console.log('Fetched directories:', res.data);
       setDirectories(res.data);
       setFilteredDirs(res.data);
     } catch (e) {
@@ -368,7 +369,7 @@ function AllDir() {
                             ? 'text-blue-500 bg-blue-500/10'
                             : 'text-muted-foreground hover:text-blue-500'
                         }`}
-                        onClick={(e) => upvoteDirectory(e, dir._id, dir.upvotes)}
+                       onClick={(e) => upvoteDirectory(e, dir._id)}
                       >
                         <ThumbsUp className="w-3 h-3 mr-1" />
                         {dir.upvotes || 0}
