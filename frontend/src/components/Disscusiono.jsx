@@ -163,6 +163,16 @@ export default function Discussion() {
     }
   };
 
+  //date
+  const formatDateOnly = (date) => {
+  return new Date(date).toLocaleDateString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+};
+
+
   return (
     <div className="h-[calc(100vh-100px)] w-full bg-background rounded-lg p-4 flex flex-col overflow-hidden relative ">
       {/* Loading State */}
@@ -210,8 +220,12 @@ export default function Discussion() {
                         {p.email}
                       </p>
                     </div>
+                     {/* Date on far right */}
+    <div className="text-xs text-muted-foreground ml-auto">
+      {formatDateOnly(p.createdAt)}
+    </div>
                   </div>
-
+                        {console.log("Post description:", p.createdAt)}
                   {/* Message */}
                   {/* <p className="text-sm text-foreground leading-relaxed">
                     {p.desc}
@@ -228,41 +242,50 @@ export default function Discussion() {
                   )}
 
                   {/* Like and Comment Section */}
-                  <div className="pt-3 border-t border-border space-y-3">
-                    {/* Like Button */}
-                    <div className="flex items-center gap-4">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleLike(p._id)}
-                        className={`gap-2 ${
-                          p.likes?.includes(user?._id)
-                            ? "text-red-500 hover:text-red-600"
-                            : "text-muted-foreground hover:text-foreground"
-                        }`}
-                      >
-                        <Heart
-                          size={18}
-                          fill={p.likes?.includes(user?._id) ? "currentColor" : "none"}
-                        />
-                        <span className="text-xs">{p.likes?.length || 0}</span>
-                      </Button>
 
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() =>
-                          setExpandedComments({
-                            ...expandedComments,
-                            [p._id]: !expandedComments[p._id],
-                          })
-                        }
-                        className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors"
-                      >
-                        <MessageCircle size={16} />
-                        <span>{p.comments?.length || 0} comments</span>
-                      </Button>
-                    </div>
+                 <div className="pt-3 border-t border-border space-y-3">
+
+  <div className="flex items-center gap-4">
+
+    {/* Like Button */}
+    <Button
+      variant="ghost"
+      size="sm"
+      onClick={() => handleLike(p._id)}
+      className={`gap-2 ${
+        p.likes?.includes(user?._id)
+          ? "text-red-500 hover:text-red-600"
+          : "text-muted-foreground hover:text-foreground"
+      }`}
+    >
+      <Heart
+        size={18}
+        fill={p.likes?.includes(user?._id) ? "currentColor" : "none"}
+      />
+      <span className="text-xs">{p.likes?.length || 0}</span>
+    </Button>
+
+    {/* Comments Button */}
+    <Button
+      variant="ghost"
+      size="sm"
+      onClick={() =>
+        setExpandedComments({
+          ...expandedComments,
+          [p._id]: !expandedComments[p._id],
+        })
+      }
+      className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors"
+    >
+      <MessageCircle size={10} />
+      <span>{p.comments?.length || 0} comments</span>
+    </Button>
+
+   
+
+  </div>
+
+                    
 
                     {/* Comments Section - Show/Hide on Click */}
                     {expandedComments[p._id] && (
@@ -334,6 +357,9 @@ export default function Discussion() {
                       </div>
                     )}
                   </div>
+                  
+                  
+
                 </CardContent>
               </Card>
             ))

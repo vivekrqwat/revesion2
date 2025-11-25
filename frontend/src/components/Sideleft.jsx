@@ -26,7 +26,7 @@ export default function SideLeft() {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <aside className="h-full flex flex-col bg-gradient-to-b from-card to-card/50 border-r border-border overflow-y-auto">
+    <aside className="h-full flex flex-col bg-gradient-to-b from-card to-card/50 border-r border-border overflow-y-auto z-10">
       {/* Header with Logo/Title - Mobile optimized */}
       <div className="px-2 sm:px-4 py-2 sm:py-3 border-b border-border/50">
         <div className="flex items-center gap-2 sm:gap-3">

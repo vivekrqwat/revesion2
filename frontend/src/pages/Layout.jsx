@@ -142,7 +142,7 @@ export function Layout() {
               ? "w-16 sm:w-20 md:w-24 lg:w-28 xl:w-[10%] opacity-100"
               : "w-0 opacity-0"
           }
-          overflow-hidden bg-[hsl(215,22%,10%)] border-r border-[hsl(215,23%,24%)] shadow-xl
+          overflow-hidden bg-[hsl(215,22%,10%)] border-r border-[hsl(215,23%,24%)] shadow-xl 
         `}
       >
         <SideLeft />
