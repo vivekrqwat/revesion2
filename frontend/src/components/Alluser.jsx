@@ -17,7 +17,7 @@ const GetAlluser=memo(function GetAlluser({user,navigate,league,userInitials}){
                 >
                 
                   <CardContent className="p-0">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6 p-4 sm:p-5">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6 p-4 sm:p-5">
                       {/* Left Side - Profile Info */}
                       <div className="space-y-3 sm:space-y-4">
                         {/* Avatar and Name */}
@@ -75,13 +75,15 @@ const GetAlluser=memo(function GetAlluser({user,navigate,league,userInitials}){
                       </div>
 
                       {/* Right Side - Contribution Graph */}
-                      <div className="sm:col-span-1 lg:col-span-2">
-                        <div className="bg-muted/20 rounded-lg border border-border/50 p-2 sm:p-3 overflow-x-auto max-h-[400px]">
-                          <h4 className="text-xs sm:text-sm font-semibold text-foreground mb-2">
+                      <div className="lg:col-span-2">
+                        <div className="bg-muted/20 rounded-lg border border-border/50 p-3 sm:p-4 flex flex-col">
+                          <h4 className="text-xs sm:text-sm font-semibold text-foreground mb-3">
                             📊 Contributions
                           </h4>
-                          <div className="scale-75 sm:scale-90 lg:scale-100 origin-top-left">
-                            <GitGraph activeDays={user.submission || []} />
+                          <div className="w-full  h-56 sm:h-64 overflow-y-auto">
+                            <div className="min-w-min p-1">
+                              <GitGraph activeDays={user.submission || []} />
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -194,13 +196,13 @@ export default function Alluser() {
 
         {/* Search Bar */}
         <Card className="bg-card border-border">
-          <CardContent className="pt-6">
+          <CardContent className="p-3">
             <input
               type="text"
               placeholder="Search by username or email..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-4 py-2 rounded-lg bg-muted border border-border text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+              className="w-full px-5 py-2 rounded-lg bg-muted border border-border text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
             />
           </CardContent>
         </Card>

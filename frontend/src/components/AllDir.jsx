@@ -241,7 +241,7 @@ function AllDir() {
 
         {/* Search Bar */}
         <Card className="bg-card border-border">
-          <CardContent className="pt-6">
+          <CardContent className="p-3">
             <Input
               placeholder="Search directories by name or description..."
               value={searchTerm}
@@ -401,8 +401,8 @@ function AllDir() {
                                 {note.desc}
                               </p>
                             </div>
-                            <div className="flex items-center gap-2 flex-shrink-0 ml-2">
-                              <Button
+                            {/* <div className="flex items-center gap-2 flex-shrink-0 ml-2"> */}
+                              {/* <Button
                                 variant="ghost"
                                 size="sm"
                                 className={`${
@@ -411,16 +411,16 @@ function AllDir() {
                                     : 'text-muted-foreground hover:text-blue-500'
                                 }`}
                                 onClick={(e) => upvoteNote(e, note._id, dir._id)}
-                              >
-                                <ThumbsUp className="w-4 h-4 mr-1" />
-                                {note.upvotes || 0}
-                              </Button>
-                              {!isOwner(dir.uid) ? (
+                              > */}
+                                {/* <ThumbsUp className="w-4 h-4 mr-1" /> */}
+                                {/* {note.upvotes || 0} */}
+                              {/* </Button> */}
+                              {/* {!isOwner(dir.uid) ? (
                                 <Eye className="w-4 h-4 text-muted-foreground" />
                               ) : (
                                 <span className="text-xs text-primary font-medium">Edit</span>
-                              )}
-                            </div>
+                              )} */}
+                            {/* </div> */}
                           </div>
                         ))
                       ) : (

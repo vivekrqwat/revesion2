@@ -29,64 +29,82 @@ import ReadMore from "./Readmore";
 const API = import.meta.env.VITE_API_URL;
 const PostItem=memo(function PostItem({item, idx, isOwnProfile, delepost, setexpandedImage}) {
   return  <div
-                              key={idx}
-                              className="bg-muted/30 border border-border rounded-lg overflow-hidden hover:border-primary/50 hover:shadow-md transition-all duration-200 group"
-                            >
-                              <div className="flex gap-4 p-4">
-                                <div className="h-3 w-3 rounded-full bg-green-500 flex-shrink-0 mt-1 group-hover:scale-110 transition-transform" />
-                                <div className="flex-1 min-w-0">
-                                  <ReadMore text={item.desc} className="flex-1" />
-                                </div>
-                                
-                                {isOwnProfile() && (
-                                  <div className="flex items-center gap-2 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <Button
-                                      variant="ghost"
-                                      size="sm"
-                                      className="text-blue-500 hover:text-blue-600 hover:bg-blue-500/10"
-                                    >
-                                      <Edit2 size={16} />
-                                    </Button>
-                                    <AlertDialog>
-                                      <AlertDialogTrigger asChild>
-                                        <Button
-                                          variant="ghost"
-                                          size="sm"
-                                          className="text-red-500 hover:text-red-600 hover:bg-red-500/10"
-                                        >
-                                          <Trash2 size={16} />
-                                        </Button>
-                                      </AlertDialogTrigger>
-                                      <AlertDialogContent className="bg-card border-border">
-                                        <AlertDialogTitle>Delete Post</AlertDialogTitle>
-                                        <AlertDialogDescription>
-                                          Are you sure you want to delete this post? This action cannot be undone.
-                                        </AlertDialogDescription>
-                                        <div className="flex gap-3 justify-end">
-                                          <AlertDialogCancel className="border-border">Cancel</AlertDialogCancel>
-                                          <AlertDialogAction
-                                            onClick={() => delepost(item._id)}
-                                            className="bg-red-600 hover:bg-red-700"
-                                          >
-                                            Delete
-                                          </AlertDialogAction>
-                                        </div>
-                                      </AlertDialogContent>
-                                    </AlertDialog>
-                                  </div>
-                                )}
-                              </div>
-                              {item?.img && (
-                                <div className="px-4 pb-4">
-                                  <img
-                                    src={item.img}
-                                    alt="post"
-                                    className="w-full max-h-96 object-contain rounded-lg bg-black cursor-pointer hover:opacity-90 transition-opacity"
-                                    onClick={() => setexpandedImage(item.img)}
-                                  />
-                                </div>
-                              )}
-                            </div>
+  key={idx}
+  className="bg-muted/30 border border-border rounded-lg overflow-hidden 
+             hover:border-primary/50 hover:shadow-md transition-all duration-200 group"
+>
+  <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 p-3 sm:p-4">
+    {/* Green Dot */}
+    <div className="h-3 w-3 rounded-full bg-green-500 flex-shrink-0 mt-1 
+                    group-hover:scale-110 transition-transform" />
+
+    {/* Text */}
+    <div className="flex-1 min-w-0">
+      <ReadMore text={item.desc} className="flex-1 text-sm sm:text-base" />
+    </div>
+
+    {/* Buttons (Edit + Delete) */}
+    {isOwnProfile() && (
+      <div
+        className="flex items-center gap-2 flex-shrink-0 
+                   opacity-100 sm:opacity-0 group-hover:opacity-100 
+                   transition-opacity justify-end sm:justify-start"
+      >
+        <Button
+          variant="ghost"
+          size="sm"
+          className="text-blue-500 hover:text-blue-600 hover:bg-blue-500/10"
+        >
+          <Edit2 size={16} />
+        </Button>
+
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-red-500 hover:text-red-600 hover:bg-red-500/10"
+            >
+              <Trash2 size={16} />
+            </Button>
+          </AlertDialogTrigger>
+
+          <AlertDialogContent className="bg-card border-border">
+            <AlertDialogTitle>Delete Post</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this post? This action cannot be undone.
+            </AlertDialogDescription>
+            <div className="flex gap-3 justify-end">
+              <AlertDialogCancel className="border-border">
+                Cancel
+              </AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => delepost(item._id)}
+                className="bg-red-600 hover:bg-red-700"
+              >
+                Delete
+              </AlertDialogAction>
+            </div>
+          </AlertDialogContent>
+        </AlertDialog>
+      </div>
+    )}
+  </div>
+
+  {/* Image */}
+  {item?.img && (
+    <div className="px-3 sm:px-4 pb-3 sm:pb-4">
+      <img
+        src={item.img}
+        alt="post"
+        className="w-full max-h-[70vh] sm:max-h-96 object-contain rounded-lg 
+                   bg-black cursor-pointer hover:opacity-90 transition-opacity"
+        onClick={() => setexpandedImage(item.img)}
+      />
+    </div>
+  )}
+</div>
+
 })
 //hi
 
@@ -329,14 +347,14 @@ const Profile = () => {
                     </div>
 
                     {/* Action Buttons */}
-                    {isOwnProfile() && (
+                    {/* {isOwnProfile() && (
                       <div className="w-full flex gap-2 pt-4 border-t border-border">
                         <Button variant="outline" className="flex-1" size="sm">
                           <Edit2 className="h-4 w-4 mr-2" />
                           Edit
                         </Button>
                       </div>
-                    )}
+                    )} */}
                   </div>
                 </CardContent>
               </Card>
