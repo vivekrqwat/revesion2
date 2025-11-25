@@ -28,6 +28,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import ReadMore from './Readmore.jsx';
+import Loading from '../pages/Loading.jsx';
 
 const API = import.meta.env.VITE_API_URL;
 
@@ -56,7 +57,7 @@ export default function Notes() {
   });
   const [showcode, setshowcode] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(null); // { id: [noteid, contentId], itemName }
-
+  const [noteLoading, setNoteLoading] = useState(false);
   // Check if current user is the owner by comparing params user ID with logged-in user ID
   useEffect(() => {
     if (paramsUserId && user?._id) {
@@ -109,10 +110,13 @@ export default function Notes() {
   const fetchNote = async () => {
     if (!noteid) return;
     try {
+      setNoteLoading(true);
       const res = await axios.get(`${API}/apii/notes/all/${noteid}`);
       setNotedata(res.data);
       setcontentdata(res.data.content);
+      setNoteLoading(false);  
     } catch (err) {
+      setNoteLoading(false);  
       console.log('Error fetching notes:', err);
       // toast.error('Failed to fetch notes');
     }
@@ -249,7 +253,7 @@ export default function Notes() {
   }, [noteid]);
 
   if (!noteid) return <div className="text-center p-8">No note selected</div>;
-
+if(noteLoading) {return <Loading msg={"Loading your notes..."}></Loading>}
   return (
     <div className="min-h-screen bg-background text-foreground p-4 sm:p-6">
       {show && <Speech setshow={setShow} desc={setFormData} />}
