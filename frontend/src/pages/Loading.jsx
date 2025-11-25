@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function Loading() {
+export default function Loading({msg}) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background text-foreground">
       <div className="flex flex-col items-center space-y-6 border-2 border-dashed border-border px-12 py-10 rounded-2xl">
@@ -11,7 +11,7 @@ export default function Loading() {
           className="w-20 h-20 object-contain" 
         />
         <div className="text-2xl font-bold tracking-wide animate-pulse">
-          LOADING YOUR NOTE_HUB...
+          {msg||'LOADING YOUR NOTE_HUB...'}
         </div>
       </div>
     </div>

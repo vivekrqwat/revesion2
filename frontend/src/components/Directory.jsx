@@ -18,6 +18,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import Loading from "../pages/Loading";
 
 const API = import.meta.env.VITE_API_URL;
 const GetALLDir=memo(function GetALLDir({dir,index,showFormIndex,updatingDirId,getnotes,togglePublicPrivate,openDir,notesMap,handleDeleteDirConfirm,handleDeleteNoteConfirm,setShowFormIndex,setNotes,loading,gotoNotes,getGradeColorClass,getGradeBadgeClass,getGrade}) {
@@ -511,8 +512,7 @@ const getGradeBadgeClass = useCallback((grade) => {
 
 
   if (loadindir) {
-    return (
-      <div className="w-full h-screen flex items-center justify-center bg-background">loading your dir  </div>)}
+    return (<Loading msg={"loading you directory"}></Loading>)}
   if (loading) {
     return (
       <div className="w-full h-screen flex items-center justify-center bg-background">
