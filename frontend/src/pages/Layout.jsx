@@ -161,7 +161,7 @@ export function Layout() {
           
           {/* Main Content */}
           <main className="flex-1 overflow-y-auto bg-gradient-to-br from-[hsl(215,20%,11%)] via-[hsl(215,20%,13%)] to-[hsl(215,20%,11%)]">
-            <div className="h-full p-4 md:p-6 lg:p-8">
+            <div className="h-full p-2 md:p-6 lg:p-8">
               <div className="max-w-7xl mx-auto">
                 <Outlet />
               </div>
