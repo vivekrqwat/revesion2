@@ -177,7 +177,7 @@ export default function Discussion() {
 
       {/* Posts Feed */}
       {!loading && (
-        <div className="flex-1 overflow-y-auto space-y-3 pr-2">
+        <div className="flex-1 overflow-y-auto space-y-3 p-2">
           {post.length > 0 ? (
             post.map((p) => (
               <Card
