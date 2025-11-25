@@ -164,7 +164,7 @@ export default function Discussion() {
   };
 
   return (
-    <div className="h-[calc(100vh-100px)] w-full bg-background rounded-lg p-4 flex flex-col overflow-hidden relative">
+    <div className="h-[calc(100vh-100px)] w-full bg-background rounded-lg p-4 flex flex-col overflow-hidden relative ">
       {/* Loading State */}
       {loading && (
         <div className="flex-1 flex flex-col items-center justify-center space-y-4">
