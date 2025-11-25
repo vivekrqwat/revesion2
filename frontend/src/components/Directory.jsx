@@ -228,15 +228,18 @@ export default function Directory() {
   const [updatingDirId, setUpdatingDirId] = useState(null);
   const { user } = UserStore();
   const [loading, setloading] = useState(false);
+  const[loadindir,setloadingdir]=useState(false);
   const navigate = useNavigate();
 
   const fetchDirData = async () => {
-    try {
+    try {setloadingdir(true);
       const resdata = await axios.get(`${API}/apii/dir/${user._id}`, {
         withCredentials: true,
       });
       setdirdata(resdata.data);
+      setloadingdir(false);
     } catch (e) {
+       setloadingdir(false);
       console.log(e);
     }
   };
@@ -507,7 +510,9 @@ const getGradeBadgeClass = useCallback((grade) => {
   );
 
 
-  
+  if (loadindir) {
+    return (
+      <div className="w-full h-screen flex items-center justify-center bg-background">loading your dir  </div>)}
   if (loading) {
     return (
       <div className="w-full h-screen flex items-center justify-center bg-background">
