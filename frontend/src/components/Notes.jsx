@@ -29,6 +29,10 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import ReadMore from './Readmore.jsx';
 import Loading from '../pages/Loading.jsx';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import TiptapEditor from './TipTapEditor.jsx';
+
 
 const API = import.meta.env.VITE_API_URL;
 
@@ -266,6 +270,10 @@ const Downloadpdf = async () => {
     toast.error('Failed to download PDF');
   }
 };
+//make font change 
+
+
+
 
 
 
@@ -339,19 +347,12 @@ if(noteLoading) {return <Loading msg={"Loading your notes..."}></Loading>}
                   className="bg-input border-border"
                 />
 
-                <Textarea
-                  placeholder={
-                    showcode ? 'Write question' : 'Write description'
-                  }
-                  value={formData.desc}
-                  onChange={(e) =>
-                    setFormData({ ...formData, desc: e.target.value })
-                  }
-                  required
-                  rows={8}
-                  className="bg-input border-border "
-            
-                />
+                <TiptapEditor
+  value={formData.desc}
+  onChange={(value) => setFormData({ ...formData, desc: value })}
+  placeholder={showcode ? 'Write question' : 'Write description'}
+  className="min-h-[200px]"
+/>
 
                 <Button
                   type="button"
@@ -573,39 +574,36 @@ if(noteLoading) {return <Loading msg={"Loading your notes..."}></Loading>}
 
       {/* Content Section */}
       <div className="space-y-4 w-full">
-        {editid === idx ? (
-          <div className="space-y-3 w-full">
-            <Textarea
-              value={descvalue}
-              onChange={(e) => setdescvalue(e.target.value)}
-              rows={18}
-              className="bg-input border-border font-mono w-full"
-            />
-            <div className="flex gap-3 justify-end">
-              <Button
-                onClick={() => saveDesc(note._id)}
-                className="bg-green-600 hover:bg-green-700"
-              >
-                Save
-              </Button>
-              <Button
-                onClick={() => seteditid(null)}
-                variant="outline"
-                className="border-border"
-              >
-                Cancel
-              </Button>
-            </div>
-          </div>
-        ) : (
-          <div
-            onClick={() => isOwner && edit(idx)}
-            className="text-base text-muted-foreground whitespace-pre-wrap leading-relaxed
-            cursor-pointer hover:text-foreground transition-colors w-full break-words"
-          >
-            <ReadMore text={note.desc} onEdit={isOwner ? () => edit(idx) : null} />
-          </div>
-        )}
+      {editid === idx ? (
+  <div className="space-y-3 w-full">
+    <TiptapEditor
+      value={descvalue}
+      onChange={setdescvalue}
+      className="min-h-[300px]"
+    />
+    <div className="flex gap-3 justify-end">
+      <Button
+        onClick={() => saveDesc(note._id)}
+        className="bg-green-600 hover:bg-green-700"
+      >
+        Save
+      </Button>
+      <Button
+        onClick={() => seteditid(null)}
+        variant="outline"
+        className="border-border"
+      >
+        Cancel
+      </Button>
+    </div>
+  </div>
+) : (
+  <div
+    onClick={() => isOwner && edit(idx)}
+    className="text-base text-muted-foreground leading-relaxed cursor-pointer hover:text-foreground transition-colors w-full break-words prose prose-sm max-w-none"
+    dangerouslySetInnerHTML={{ __html: note.desc }}
+  />
+)}
 
         {note.Approach && (
           <>
