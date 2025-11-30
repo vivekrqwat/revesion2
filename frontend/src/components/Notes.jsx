@@ -259,6 +259,7 @@ const Downloadpdf = async () => {
       a.href=url;
       a.download="mynotes.pdf";
       a.click();
+      toast.success('PDF Downloaded Successfully');
     
     } catch (err) {
     console.log('Error downloading PDF:', err);
