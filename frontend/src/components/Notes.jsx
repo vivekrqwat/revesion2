@@ -542,7 +542,7 @@ if(noteLoading) {return <Loading msg={"Loading your notes..."}></Loading>}
         </div> */}
 
       {/* changing UI of notes display to without using Card component */}
-   <div className="space-y-6 max-h-[80vh] overflow-y-auto pr-2 w-full">
+   <div className="space-y-6 max-h-[80vh] overflow-y-auto pl-4 w-full">
   {filteredNotes.map((note, idx) => (
     <div key={idx} className="w-full">
       {/* Header Section */}
