@@ -16,6 +16,7 @@ import ProfilePage from '@/pages/profilepage.jsx';
 import { ToastContainer } from 'react-toastify';
 import AllDir from '@/components/AllDir.jsx';
 import Alluser from '@/components/Alluser.jsx';
+import VoiceNoteHub from './components/VoiceNoteHub.jsx';
 
 // export default function App() {
 //   const { user, checkAuth, initializeUser, loading } = UserStore();
@@ -145,6 +146,7 @@ export default function App() {
                                        <Route path="/allusers" element={<Alluser></Alluser>}/>
                   </Route>
                   <Route path="/profile/:id" element={<ProfilePage />} />
+                  <Route path="/ai" element={<VoiceNoteHub></VoiceNoteHub>} />
 
                 </>
               )}

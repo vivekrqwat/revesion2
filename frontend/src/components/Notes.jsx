@@ -11,7 +11,7 @@ import { toast } from 'react-toastify';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Trash2, Copy, Maximize2 } from 'lucide-react';
+import { Trash2, Copy, Maximize2, Download, DownloadCloudIcon } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -139,6 +139,7 @@ export default function Notes() {
   const confirmDelete = async () => {
     if (!deleteConfirm) return;
     try {
+      console.log('Deleting note with id:', deleteConfirm.id);
       await Delete('content', deleteConfirm.id);
       toast.success('Note deleted');
       fetchNote();
@@ -245,6 +246,28 @@ export default function Notes() {
     }
   };
 
+//Download PDF
+const Downloadpdf = async () => {
+  try {
+    const res = await axios.get(`${API}/apii/pdfdownlaod/pdf/${noteid}`, {
+      responseType: 'blob',
+      withCredentials: true,  });
+       const blob = new Blob([res.data], { type: "application/pdf" });
+
+    const url = window.URL.createObjectURL(blob);
+      const a=document.createElement('a');
+      a.href=url;
+      a.download="mynotes.pdf";
+      a.click();
+    
+    } catch (err) {
+    console.log('Error downloading PDF:', err);
+    toast.error('Failed to download PDF');
+  }
+};
+
+
+
   useEffect(() => {
     if (noteid) {
       localStorage.setItem('noteid', noteid);
@@ -261,14 +284,27 @@ if(noteLoading) {return <Loading msg={"Loading your notes..."}></Loading>}
       <div className="max-w-4xl mx-auto space-y-6">
         <div className="flex justify-between items-center">
           <h1 className="text-3xl font-bold">{notedata?.heading}</h1>
-          {isOwner && (
-            <Button
-              onClick={() => setShowForm(!showForm)}
-              className="bg-primary hover:bg-primary/90"
-            >
-              {showForm ? 'Close' : 'Add Note'}
-            </Button>
-          )}
+          <div className="flex items-center gap-3">
+  {/* Small icon button */}
+  <Button 
+    onClick={Downloadpdf} 
+    className="p-2 h-9 w-9 flex items-center justify-center"
+    variant="outline"
+  >
+    <DownloadCloudIcon></DownloadCloudIcon>
+  </Button>
+
+  {isOwner && (
+    <Button
+      onClick={() => setShowForm(!showForm)}
+      className="bg-primary hover:bg-primary/90 px-4"
+    >
+      {showForm ? 'Close' : 'Add Note'}
+    </Button>
+  )}
+</div>
+
+          
         </div>
 
         {/* Search Bar */}
@@ -312,7 +348,8 @@ if(noteLoading) {return <Loading msg={"Loading your notes..."}></Loading>}
                   }
                   required
                   rows={8}
-                  className="bg-input border-border"
+                  className="bg-input border-border "
+            
                 />
 
                 <Button
