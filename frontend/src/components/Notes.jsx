@@ -32,6 +32,7 @@ import Loading from '../pages/Loading.jsx';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import TiptapEditor from './TipTapEditor.jsx';
+import ReadOnlyTipTap from './ReadOnlyTipTap.jsx';
 
 
 const API = import.meta.env.VITE_API_URL;
@@ -598,11 +599,12 @@ if(noteLoading) {return <Loading msg={"Loading your notes..."}></Loading>}
     </div>
   </div>
 ) : (
-  <div
+ <div
     onClick={() => isOwner && edit(idx)}
-    className="text-base text-muted-foreground leading-relaxed cursor-pointer hover:text-foreground transition-colors w-full break-words prose prose-sm max-w-none"
-    dangerouslySetInnerHTML={{ __html: note.desc }}
-  />
+    className="w-full cursor-pointer"
+  >
+    <ReadOnlyTipTap content={note.desc} />
+  </div>
 )}
 
         {note.Approach && (
