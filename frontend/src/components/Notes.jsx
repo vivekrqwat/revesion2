@@ -427,7 +427,7 @@ if(noteLoading) {return <Loading msg={"Loading your notes..."}></Loading>}
           </Card>
         )}
 
-        <div className="space-y-4 max-h-[80vh] overflow-y-auto pr-2">
+        {/* <div className="space-y-4 max-h-[80vh] overflow-y-auto pr-2">
           {filteredNotes.map((note, idx) => (
             <Card
               key={idx}
@@ -539,7 +539,135 @@ if(noteLoading) {return <Loading msg={"Loading your notes..."}></Loading>}
               </CardContent>
             </Card>
           ))}
+        </div> */}
+
+      {/* changing UI of notes display to without using Card component */}
+   <div className="space-y-6 max-h-[80vh] overflow-y-auto pr-2 w-full">
+  {filteredNotes.map((note, idx) => (
+    <div key={idx} className="w-full">
+      {/* Header Section */}
+      <div className="pb-3">
+        <div className="flex items-center justify-between gap-3 w-full">
+          <div className="flex items-center gap-3 flex-1 min-w-0">
+            <div
+              className={`w-4 h-4 rounded-md flex-shrink-0 ${getGradeColor(
+                note.grade
+              )}`}
+            />
+            <h2 className="text-2xl font-semibold capitalize break-words flex-1">
+              {note.heading}
+            </h2>
+          </div>
+          {isOwner && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => handleDeleteConfirm(note._id, note.heading)}
+              className="text-destructive hover:text-destructive hover:bg-destructive/10 flex-shrink-0"
+            >
+              <Trash2 size={18} />
+            </Button>
+          )}
         </div>
+      </div>
+
+      {/* Content Section */}
+      <div className="space-y-4 w-full">
+        {editid === idx ? (
+          <div className="space-y-3 w-full">
+            <Textarea
+              value={descvalue}
+              onChange={(e) => setdescvalue(e.target.value)}
+              rows={18}
+              className="bg-input border-border font-mono w-full"
+            />
+            <div className="flex gap-3 justify-end">
+              <Button
+                onClick={() => saveDesc(note._id)}
+                className="bg-green-600 hover:bg-green-700"
+              >
+                Save
+              </Button>
+              <Button
+                onClick={() => seteditid(null)}
+                variant="outline"
+                className="border-border"
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <div
+            onClick={() => isOwner && edit(idx)}
+            className="text-base text-muted-foreground whitespace-pre-wrap leading-relaxed
+            cursor-pointer hover:text-foreground transition-colors w-full break-words"
+          >
+            <ReadMore text={note.desc} onEdit={isOwner ? () => edit(idx) : null} />
+          </div>
+        )}
+
+        {note.Approach && (
+          <>
+            <hr className="border-border" />
+            <p className="text-base text-muted-foreground whitespace-pre-wrap leading-relaxed w-full break-words">
+              {note.Approach}
+            </p>
+          </>
+        )}
+
+        {note.img && (
+          <Dialog>
+            <DialogTrigger asChild>
+              <img
+                src={note.img}
+                alt="note-img"
+                className="rounded-md w-full cursor-pointer hover:opacity-90 transition-opacity"
+              />
+            </DialogTrigger>
+            <DialogContent className="max-w-4xl bg-card border-border">
+              <img
+                src={note.img}
+                alt="note-img-expanded"
+                className="w-full aspect-video object-cover rounded-md object-center"
+              />
+            </DialogContent>
+          </Dialog>
+        )}
+
+        {note.code && (
+          <>
+            <hr className="border-border" />
+            <Button
+              onClick={() => handlecopy(note.code)}
+              size="sm"
+              variant="outline"
+              className="border-border"
+            >
+              <Copy size={16} className="mr-2" />
+              Copy Code
+            </Button>
+            <div className="w-full overflow-x-auto">
+              <CodeEditor cd={note.code} />
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* Separator line - only show if not the last item */}
+      {idx < filteredNotes.length - 1 && (
+<hr className="border-t-1 border-white/50 mt-10" />
+
+      )}
+    </div>
+  ))}
+</div>
+
+
+      
+
+
+
 
         {/* Delete Confirmation Dialog */}
         <AlertDialog open={!!deleteConfirm} onOpenChange={(open) => !open && setDeleteConfirm(null)}>
