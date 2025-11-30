@@ -29,8 +29,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import ReadMore from './Readmore.jsx';
 import Loading from '../pages/Loading.jsx';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+
 import TiptapEditor from './TipTapEditor.jsx';
 import ReadOnlyTipTap from './ReadOnlyTipTap.jsx';
 
