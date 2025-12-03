@@ -90,29 +90,34 @@ export default function App() {
 
 
 
-  useEffect(() => {
-  const alreadyLogged = UserStore.getState().initializeUser();
+ 
 
-  if (!alreadyLogged) {
-    // Only check auth from API if no local user
-    UserStore.getState().checkAuth();
-  }
-}, []);
+  // useEffect(() => {
+  //   let mounted = true;
+  //   const init = async () => {
+  //     // restore local user first (sync)
+  //     initializeUser();
+  //     // then verify with backend (async)
+  //     await checkAuth();
+  //     if (mounted) setReady(true);
+  //   };
+  //   init();
+  //   return () => {
+  //     mounted = false;
+  //   };
+  // }, [initializeUser, checkAuth]);
 
-  useEffect(() => {
-    let mounted = true;
-    const init = async () => {
-      // restore local user first (sync)
-      initializeUser();
-      // then verify with backend (async)
-      await checkAuth();
-      if (mounted) setReady(true);
-    };
-    init();
-    return () => {
-      mounted = false;
-    };
-  }, [initializeUser, checkAuth]);
+
+ useEffect(() => {
+    const alreadyLogged = initializeUser();
+    
+    if (!alreadyLogged) {
+      checkAuth().finally(() => setReady(true));
+    } else {
+      setReady(true); // fast load using localStorage
+    }
+  }, []);
+
 
   return (
     <>
