@@ -237,6 +237,7 @@ export default function Directory() {
       const resdata = await axios.get(`${API}/apii/dir/${user._id}`, {
         withCredentials: true,
       });
+      console.log("Directory data fetched:", resdata.data);
       setdirdata(resdata.data);
       setloadingdir(false);
     } catch (e) {
