@@ -24,7 +24,9 @@ export const UserStore = create((set) => ({
         const userData = JSON.parse(savedUser);
         set({ user: userData, isAutth: true });
         console.log("User initialized from localStorage:", userData);
-      }
+        return true;
+      } 
+      return false;
     } catch (e) {
       console.error("Failed to initialize user:", e);
       localStorage.removeItem('user1');
@@ -40,7 +42,7 @@ export const UserStore = create((set) => ({
       console.log("check auth response:", res.data);
       
       // ✅ Extract user data properly
-      const userData = res.data.user || res.data;
+      const userData = res.data || res.data.user;
       set({ user: userData, isAutth: true, loading: false });
       
       // ✅ Save to localStorage

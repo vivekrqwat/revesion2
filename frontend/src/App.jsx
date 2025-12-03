@@ -88,6 +88,17 @@ export default function App() {
 
   const [ready, setReady] = useState(false);
 
+
+
+  useEffect(() => {
+  const alreadyLogged = UserStore.getState().initializeUser();
+
+  if (!alreadyLogged) {
+    // Only check auth from API if no local user
+    UserStore.getState().checkAuth();
+  }
+}, []);
+
   useEffect(() => {
     let mounted = true;
     const init = async () => {
