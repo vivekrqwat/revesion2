@@ -47,6 +47,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import Directory from './Directory';
+import { DirectorySkeleton } from './Sekelton ';
 
 const API = import.meta.env.VITE_API_URL;
 
@@ -218,13 +220,7 @@ function AllDir() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted p-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex items-center justify-center h-96">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-          </div>
-        </div>
-      </div>
+      <DirectorySkeleton></DirectorySkeleton>
     );
   }
 

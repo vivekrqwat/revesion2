@@ -32,6 +32,7 @@ import Loading from '../pages/Loading.jsx';
 
 import TiptapEditor from './TipTapEditor.jsx';
 import ReadOnlyTipTap from './ReadOnlyTipTap.jsx';
+import { NoteSkeleton } from './Sekelton .jsx';
 
 
 const API = import.meta.env.VITE_API_URL;
@@ -285,7 +286,7 @@ const Downloadpdf = async () => {
   }, [noteid]);
 
   if (!noteid) return <div className="text-center p-8">No note selected</div>;
-if(noteLoading) {return <Loading msg={"Loading your notes..."}></Loading>}
+if(noteLoading) {return <NoteSkeleton></NoteSkeleton>}
   return (
     <div className="min-h-screen bg-background text-foreground p-2 sm:p-6">
       {show && <Speech setshow={setShow} desc={setFormData} />}
