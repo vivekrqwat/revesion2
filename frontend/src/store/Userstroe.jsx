@@ -4,56 +4,91 @@ import { create } from 'zustand';
 
 const API = import.meta.env.VITE_API_URL;
 
-export const UserStore = create((set) => ({
+export const UserStore = create((set,get) => ({
   user: null,
   isAutth: false,
   noteid: null,
   postdata: null,
   notedata: null,
-  loading: false,
+  loading: true,
 
   setnoteid: (id) => {
     set({ noteid: id });
   },
 
   // ✅ Initialize user from localStorage on app start
-  initializeUser: () => {
-    try {
-      const savedUser = localStorage.getItem('user1');
-      if (savedUser) {
-        const userData = JSON.parse(savedUser);
-        set({ user: userData, isAutth: true });
-        console.log("User initialized from localStorage:", userData);
-        return true;
-      } 
-      return false;
-    } catch (e) {
-      console.error("Failed to initialize user:", e);
-      localStorage.removeItem('user1');
-    }
-  },
+  // initializeUser: () => {
+  //   try {
+  //     const savedUser = localStorage.getItem('user1');
+  //     if (savedUser) {
+  //       const userData = JSON.parse(savedUser);
+  //       set({ user: userData, isAutth: true });
+  //       console.log("User initialized from localStorage:", userData);
+  //       return true;
+  //     } 
+  //     return false;
+  //   } catch (e) {
+  //     console.error("Failed to initialize user:", e);
+  //     localStorage.removeItem('user1');
+  //   }
+  // },
 
-  checkAuth: async () => {
-    try {
-      set({ loading: true });
-      const res = await axios.get(`${API}/apii/user/check`, {
-        withCredentials: true,
-      });
-      console.log("check auth response:", res.data);
+  // checkAuth: async () => {
+  //   try {
+  //     set({ loading: true });
+  //     const res = await axios.get(`${API}/apii/user/check`, {
+  //       withCredentials: true,
+  //     });
+  //     console.log("check auth response:", res.data);
       
-      // ✅ Extract user data properly
-      const userData = res.data || res.data.user;
-      set({ user: userData, isAutth: true, loading: false });
+  //     // ✅ Extract user data properly
+  //     const userData = res.data || res.data.user;
+  //     set({ user: userData, isAutth: true, loading: false });
       
-      // ✅ Save to localStorage
-      localStorage.setItem('user1', JSON.stringify(userData));
-    } catch (e) {
-      console.error("Auth check failed:", e);
-      set({ user: null, isAutth: false, loading: false });
-      // normalize key removal
-      localStorage.removeItem('user1');
+  //     // ✅ Save to localStorage
+  //     localStorage.setItem('user1', JSON.stringify(userData));
+  //   } catch (e) {
+  //     console.error("Auth check failed:", e);
+  //     set({ user: null, isAutth: false, loading: false });
+  //     // normalize key removal
+  //     localStorage.removeItem('user1');
+  //   }
+  // },
+
+fastInit: async () => {
+  try {
+    // LOCAL RESTORE IMMEDIATELY
+    const saved = localStorage.getItem("user1");
+    if (saved) {
+      set({ user: JSON.parse(saved), isAutth: true });
     }
-  },
+
+    // START BACKGROUND VERIFY
+    set({ loading: true });
+
+    const res = await axios.get(`${API}/apii/user/check`, {
+      withCredentials: true,
+    });
+
+    const userData = res.data.user || res.data;
+
+    set({
+      user: userData,
+      isAutth: true,
+      loading: false,
+    });
+
+    localStorage.setItem("user1", JSON.stringify(userData));
+
+  } catch (err) {
+    set({ user: null, isAutth: false, loading: false });
+    localStorage.removeItem("user1");
+  }
+},
+
+
+
+
 
   signup: async (data) => {
     try {

@@ -83,84 +83,139 @@ import VoiceNoteHub from './components/VoiceNoteHub.jsx';
 //   // );
 
 // }
+// export default function App() {
+//   const { user, checkAuth, initializeUser, loading,fastInit } = UserStore();
+
+//   const [ready, setReady] = useState(false);
+
+
+
+//   // useEffect(() => {
+//   //   let mounted = true;
+//   //   const init = async () => {
+//   //     // restore local user first (sync)
+//   //     initializeUser();
+//   //     // then verify with backend (async)
+//   //     await checkAuth();
+//   //     if (mounted) setReady(true);
+//   //   };
+//   //   init();
+//   //   return () => {
+//   //     mounted = false;
+//   //   };
+//   // }, [initializeUser, checkAuth]);
+//  useEffect(() => {
+//     fastInit(); // 🚀
+//     // cono super fast init
+//     console.log("Fast init called",loading);
+//   }, []);
+//   if(loading){console.log("Loading in app:",loading)}
+//    if (loading) return <Loading />;
+
+
+
+//   return (
+//     <>
+//       {/* 👇 ToastContainer must stay OUTSIDE all conditionals */}
+//       <ToastContainer 
+//         position="top-right"
+//         autoClose={3000}
+//         hideProgressBar={false}
+//         newestOnTop={true}
+//         closeOnClick
+//         rtl={false}
+//         pauseOnFocusLoss
+//         draggable
+//         pauseOnHover
+//       />
+
+//       {/* 👇 Now loading cannot hide ToastContainer */}
+//       {(!ready || loading) ? (
+//         <Loading />
+//       ) : (
+//         <div className="min-h-screen bg-background text-foreground">
+//           <BrowserRouter>
+//             <Routes>
+//               <Route
+//                 path="/login"
+//                 element={!user ? <Login /> : <Navigate to="/" replace />}
+//               />
+//               <Route
+//                 path="/signup"
+//                 element={!user ? <Signup /> : <Navigate to="/" replace />}
+//               />
+
+//               {user && (
+//                 <>
+//                   <Route path="/" element={<Layout />}>
+//                     <Route index element={<HomePage />} />
+//                     <Route path="post" element={<Discussion />} />
+//                     <Route path="dir" element={<Directory />} />
+//                     <Route path="collab" element={<Collaborative />} />
+//                                       <Route path="/notes/:id" element={<Notes />} />
+//                                       <Route path="/alldir" element={<AllDir></AllDir>}/>
+//                                        <Route path="/allusers" element={<Alluser></Alluser>}/>
+//                   </Route>
+//                   <Route path="/profile/:id" element={<ProfilePage />} />
+//                   <Route path="/ai" element={<VoiceNoteHub></VoiceNoteHub>} />
+
+//                 </>
+//               )}
+
+//               <Route
+//                 path="*"
+//                 element={user ? <Navigate to="/" replace /> : <Navigate to="/login" replace />}
+//               />
+//             </Routes>
+//           </BrowserRouter>
+//         </div>
+//       )}
+//     </>
+//   );
+// }
+
+
 export default function App() {
-  const { user, checkAuth, initializeUser, loading } = UserStore();
-
-  const [ready, setReady] = useState(false);
-
-
+  const { user, fastInit, loading } = UserStore();
 
   useEffect(() => {
-    let mounted = true;
-    const init = async () => {
-      // restore local user first (sync)
-      initializeUser();
-      // then verify with backend (async)
-      await checkAuth();
-      if (mounted) setReady(true);
-    };
-    init();
-    return () => {
-      mounted = false;
-    };
-  }, [initializeUser, checkAuth]);
+    fastInit(); // 🔥 Fast local + async backend auth
+  }, []);
+
+  if (loading) return <Loading />;   // 🔥 handles all loading phases
 
   return (
     <>
-      {/* 👇 ToastContainer must stay OUTSIDE all conditionals */}
-      <ToastContainer 
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={true}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
+      <ToastContainer />
 
-      {/* 👇 Now loading cannot hide ToastContainer */}
-      {(!ready || loading) ? (
-        <Loading />
-      ) : (
-        <div className="min-h-screen bg-background text-foreground">
-          <BrowserRouter>
-            <Routes>
-              <Route
-                path="/login"
-                element={!user ? <Login /> : <Navigate to="/" replace />}
-              />
-              <Route
-                path="/signup"
-                element={!user ? <Signup /> : <Navigate to="/" replace />}
-              />
+      <BrowserRouter>
+        <Routes>
+          {/* Public */}
+          <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
+          <Route path="/signup" element={!user ? <Signup /> : <Navigate to="/" />} />
 
-              {user && (
-                <>
-                  <Route path="/" element={<Layout />}>
-                    <Route index element={<HomePage />} />
-                    <Route path="post" element={<Discussion />} />
-                    <Route path="dir" element={<Directory />} />
-                    <Route path="collab" element={<Collaborative />} />
-                                      <Route path="/notes/:id" element={<Notes />} />
-                                      <Route path="/alldir" element={<AllDir></AllDir>}/>
-                                       <Route path="/allusers" element={<Alluser></Alluser>}/>
-                  </Route>
-                  <Route path="/profile/:id" element={<ProfilePage />} />
-                  <Route path="/ai" element={<VoiceNoteHub></VoiceNoteHub>} />
+          {/* Protected */}
+          {user && (
+            <>
+              <Route path="/" element={<Layout />}>
+                <Route index element={<HomePage />} />
+                <Route path="post" element={<Discussion />} />
+                <Route path="dir" element={<Directory />} />
+                <Route path="collab" element={<Collaborative />} />
+                <Route path="/notes/:id" element={<Notes />} />
+                <Route path="/alldir" element={<AllDir />} />
+                <Route path="/allusers" element={<Alluser />} />
+              </Route>
 
-                </>
-              )}
+              <Route path="/profile/:id" element={<ProfilePage />} />
+              <Route path="/ai" element={<VoiceNoteHub />} />
+            </>
+          )}
 
-              <Route
-                path="*"
-                element={user ? <Navigate to="/" replace /> : <Navigate to="/login" replace />}
-              />
-            </Routes>
-          </BrowserRouter>
-        </div>
-      )}
+          <Route path="*" element={user ? <Navigate to="/" /> : <Navigate to="/login" />} />
+        </Routes>
+      </BrowserRouter>
     </>
   );
 }
+

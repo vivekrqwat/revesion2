@@ -5,7 +5,7 @@ import DirectoryForm from "./FormComponent";
 export default function HomePage() {
   const { user } = UserStore();
   const [showForm, setShowForm] = useState(false);
-
+console.log("HomePage user data:", user.username);
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4">
       {showForm ? (
