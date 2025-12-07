@@ -15,7 +15,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  // ✅ Redirect if already logged in
+  // Redirect if already logged in
   useEffect(() => {
     if (user) {
       navigate("/", { replace: true });
@@ -38,48 +38,53 @@ const Login = () => {
       };
       console.log("Attempting login with:", email);
       
-      // ✅ Await login and wait for user to be set
       const userData = await login(formdata);
       
       console.log("Login returned user:", userData);
       
       if (userData) {
         toast.success("Login successful!");
-        
-        // ✅ Force a small delay to ensure state updates
-        setTimeout(() => {
-          navigate("/", { replace: true });
-        }, 100);
+        // Relying on useEffect for navigation after state update
       }
     } catch (err) {
       console.error("Login error:", err);
- 
-      toast.error(err.message || "Login failed");
+      
+      const errorMessage = 
+        err.response?.data?.message || // Check for common API error structure
+        err.message || 
+        "Login failed"; // Default fallback message
+        
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-4 py-8">
+    // 1. Use global background/text variables
+    <div className="min-h-screen bg-[var(--bg)] text-[var(--fg)] flex items-center justify-center px-4 py-8">
       <div className="flex flex-col md:flex-row rounded-lg overflow-hidden max-w-6xl w-full gap-0 items-stretch">
+        
         {/* Left Panel - Login Form */}
-        <Card className="w-full md:w-1/2 bg-card border-0 shadow-xl rounded-r-none md:rounded-r-lg">
+        {/* 2. Use card background and border variables */}
+        <Card className="w-full md:w-1/2 bg-[var(--card)] border-[var(--border)] border-0 shadow-xl rounded-r-none md:rounded-r-lg">
           <CardHeader className="space-y-6">
             {/* Logo */}
             <div className="text-center">
               <h1 className="text-3xl font-bold flex items-center justify-center gap-2">
-                <span className="bg-primary text-primary-foreground px-3 py-1 rounded-lg font-black">
+                {/* 3. Use primary color for logo background and foreground */}
+                <span className="bg-[var(--primary)] text-[var(--primary-foreground)] px-3 py-1 rounded-lg font-black">
                   NOTE
                 </span>
-                <span className="text-primary font-black">HUB</span>
+                <span className="text-[var(--primary)] font-black">HUB</span>
               </h1>
             </div>
 
             {/* Title */}
             <div>
-              <h2 className="text-2xl font-bold text-foreground">Welcome Back</h2>
-              <p className="text-sm text-muted-foreground mt-1">
+              <h2 className="text-2xl font-bold text-[var(--fg)]">Welcome Back</h2>
+              {/* 4. Use muted text variable */}
+              <p className="text-sm text-[var(--muted)] mt-1">
                 Sign in to your account to continue
               </p>
             </div>
@@ -89,11 +94,12 @@ const Login = () => {
             <form onSubmit={logindata} className="space-y-4">
               {/* Email Field */}
               <div className="space-y-2">
-                <label htmlFor="email" className="text-sm font-semibold text-foreground">
+                <label htmlFor="email" className="text-sm font-semibold text-[var(--fg)]">
                   Email Address
                 </label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
+                  {/* 5. Icon color uses muted text */}
+                  <Mail className="absolute left-3 top-3 h-5 w-5 text-[var(--muted)]" />
                   <Input
                     type="email"
                     id="email"
@@ -101,7 +107,8 @@ const Login = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Enter your email"
-                    className="pl-10 bg-muted border-border text-foreground"
+                    // 6. Input uses muted background and border variables
+                    className="pl-10 bg-[var(--muted)]/20 border-[var(--border)] text-[var(--fg)]"
                     required
                     disabled={loading}
                   />
@@ -110,11 +117,11 @@ const Login = () => {
 
               {/* Password Field */}
               <div className="space-y-2">
-                <label htmlFor="password" className="text-sm font-semibold text-foreground">
+                <label htmlFor="password" className="text-sm font-semibold text-[var(--fg)]">
                   Password
                 </label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
+                  <Lock className="absolute left-3 top-3 h-5 w-5 text-[var(--muted)]" />
                   <Input
                     type={showPassword ? "text" : "password"}
                     id="password"
@@ -122,7 +129,8 @@ const Login = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Enter your password"
-                    className="pl-10 pr-10 bg-muted border-border text-foreground"
+                    // 6. Input uses muted background and border variables
+                    className="pl-10 pr-10 bg-[var(--muted)]/20 border-[var(--border)] text-[var(--fg)]"
                     required
                     disabled={loading}
                   />
@@ -130,7 +138,9 @@ const Login = () => {
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     disabled={loading}
-                    className="absolute right-3 top-3 text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
+                    // 7. Toggle button uses muted/foreground colors
+                    className="absolute right-3 top-3 text-[var(--muted)] hover:text-[var(--fg)] transition-colors disabled:opacity-50"
+                    aria-label={showPassword ? "Hide password" : "Show password"}
                   >
                     {showPassword ? (
                       <EyeOff className="h-5 w-5" />
@@ -145,11 +155,12 @@ const Login = () => {
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold h-10 mt-6"
+                // 8. Button uses primary variables
+                className="w-full bg-[var(--primary)] hover:bg-[var(--primary)]/90 text-[var(--primary-foreground)] font-semibold h-10 mt-6"
               >
                 {loading ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin text-[var(--primary-foreground)]" />
                     Signing in...
                   </>
                 ) : (
@@ -160,11 +171,12 @@ const Login = () => {
 
             {/* Signup Link */}
             <div className="text-center pt-2">
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-[var(--muted)]">
                 Don't have an account?{" "}
                 <button
                   onClick={() => navigate("/signup")}
-                  className="text-primary font-semibold hover:underline cursor-pointer transition-colors"
+                  // 9. Link uses primary color
+                  className="text-[var(--primary)] font-semibold hover:underline cursor-pointer transition-colors"
                 >
                   Sign up
                 </button>
@@ -174,11 +186,13 @@ const Login = () => {
         </Card>
 
         {/* Right Panel - Welcome Message */}
-        <Card className="hidden md:flex w-full md:w-1/2 bg-primary text-primary-foreground border-0 rounded-l-none shadow-xl overflow-hidden relative">
+        {/* 10. Background uses primary color and text uses primary-foreground */}
+        <Card className="hidden md:flex w-full md:w-1/2 bg-[var(--primary)] text-[var(--primary-foreground)] border-0 rounded-l-none shadow-xl overflow-hidden relative">
           {/* Background Pattern */}
           <div className="absolute inset-0 opacity-10">
-            <div className="absolute top-0 right-0 w-96 h-96 bg-primary-foreground rounded-full -mr-48 -mt-48" />
-            <div className="absolute bottom-0 left-0 w-72 h-72 bg-primary-foreground rounded-full -ml-36 -mb-36" />
+            {/* 11. Pattern uses primary-foreground */}
+            <div className="absolute top-0 right-0 w-96 h-96 bg-[var(--primary-foreground)] rounded-full -mr-48 -mt-48" />
+            <div className="absolute bottom-0 left-0 w-72 h-72 bg-[var(--primary-foreground)] rounded-full -ml-36 -mb-36" />
           </div>
 
           {/* Content */}
@@ -187,7 +201,9 @@ const Login = () => {
             <div>
               <h1 className="text-3xl sm:text-4xl font-black">
                 <span>NOTE</span>
-                <span className="text-yellow-300">_HUB</span>
+                {/* 12. Using the secondary accent color variable (if defined) or a custom color for the "HUB" contrast */}
+                {/* Assuming yellow-300 should be the secondary accent color variable: --secondary */}
+                <span className="text-[var(--secondary)]">_HUB</span> 
               </h1>
             </div>
 
@@ -195,7 +211,7 @@ const Login = () => {
             <div className="space-y-4">
               <div>
                 <h2 className="text-2xl sm:text-3xl font-bold mb-4">
-                  Welcome to Note<span className="text-yellow-300">Hub!</span>
+                  Welcome to Note<span className="text-[var(--secondary)]">Hub!</span>
                 </h2>
                 <p className="text-sm sm:text-base leading-relaxed opacity-90">
                   Your academic journey just got easier. NoteHub is a student-friendly platform where
@@ -206,15 +222,15 @@ const Login = () => {
 
               <div className="pt-4 space-y-3 opacity-80">
                 <div className="flex items-start gap-3">
-                  <div className="h-2 w-2 rounded-full bg-primary-foreground mt-2 flex-shrink-0" />
+                  <div className="h-2 w-2 rounded-full bg-[var(--primary-foreground)] mt-2 flex-shrink-0" />
                   <p className="text-sm">Organize notes by subjects and topics</p>
                 </div>
                 <div className="flex items-start gap-3">
-                  <div className="h-2 w-2 rounded-full bg-primary-foreground mt-2 flex-shrink-0" />
+                  <div className="h-2 w-2 rounded-full bg-[var(--primary-foreground)] mt-2 flex-shrink-0" />
                   <p className="text-sm">Collaborate with classmates in real-time</p>
                 </div>
                 <div className="flex items-start gap-3">
-                  <div className="h-2 w-2 rounded-full bg-primary-foreground mt-2 flex-shrink-0" />
+                  <div className="h-2 w-2 rounded-full bg-[var(--primary-foreground)] mt-2 flex-shrink-0" />
                   <p className="text-sm">Access your notes from anywhere</p>
                 </div>
               </div>
