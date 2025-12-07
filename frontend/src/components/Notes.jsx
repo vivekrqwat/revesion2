@@ -11,7 +11,7 @@ import { toast } from 'react-toastify';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Trash2, Copy, Maximize2, Download, DownloadCloudIcon } from 'lucide-react';
+import { Trash2, Copy, Maximize2, Download, DownloadCloudIcon,Mic, VolumeX  } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -33,6 +33,8 @@ import Loading from '../pages/Loading.jsx';
 import TiptapEditor from './TipTapEditor.jsx';
 import ReadOnlyTipTap from './ReadOnlyTipTap.jsx';
 import { NoteSkeleton } from './Sekelton .jsx';
+import { useSpeechSynthesis } from 'react-speech-kit';
+
 
 
 const API = import.meta.env.VITE_API_URL;
@@ -63,6 +65,30 @@ export default function Notes() {
   const [showcode, setshowcode] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [noteLoading, setNoteLoading] = useState(false);
+  const[audioid,setaudioid]=useState(true);
+  
+  const { speak, cancel, speaking } = useSpeechSynthesis();
+
+//   useEffect(() => {
+//     setaudio(speaking);
+// }, [speaking]);
+
+    const Playpauseaudio = (desc,heading,id) => {
+     
+  if (speaking && audioid === id) {
+     console.log("speakin")
+    // If the hook reports speaking is TRUE, call stop/cancel
+    cancel();
+    setaudioid(null);
+  } else {
+    cancel();
+    setaudioid(id)
+    let b=heading+"."+desc
+    // If speaking is FALSE, start the speech
+    speak({ text: b });
+  }
+  // Note: We no longer need setaudio(!audio) here because the useEffect handles the update.
+}
 
   useEffect(() => {
     if (paramsUserId && user?._id) {
@@ -404,7 +430,7 @@ export default function Notes() {
 
         {/* Notes Display */}
         <div className="space-y-6 max-h-[80vh] overflow-y-auto pl-2 w-full">
-          {filteredNotes.map((note, idx) => (
+          {filteredNotes.map((note, idx,key) => (
             <div key={idx} className="w-full">
               {/* Header Section */}
               <div className="pb-3">
@@ -419,6 +445,28 @@ export default function Notes() {
                       {note.heading}
                     </h2>
                   </div>
+                                        {speaking && audioid === note._id ? (
+    <Button
+      onClick={() => Playpauseaudio(note.desc, note.heading, note._id)}
+      // Use 'destructive' variant for stop/cancel action for visual emphasis
+      variant="destructive" 
+      size="sm"
+      className="bg-red-500 hover:bg-red-600"
+    >
+      <VolumeX size={16} className="mr-2" />
+    </Button>
+  ) : (
+    <Button
+      onClick={() => Playpauseaudio(note.desc, note.heading, note._id)}
+      // Use 'outline' or 'default' variant for play/start action
+      variant="outline" 
+      size="sm"
+      className="border-[var(--primary)] text-[var(--primary)] hover:bg-[var(--primary)]/10"
+    >
+      <Mic size={16} className="mr-2" />
+    </Button>
+  )}
+
                   {isOwner && (
                     <Button
                       variant="ghost"
@@ -429,6 +477,8 @@ export default function Notes() {
                       <Trash2 size={18} />
                     </Button>
                   )}
+
+                  
                 </div>
               </div>
 
