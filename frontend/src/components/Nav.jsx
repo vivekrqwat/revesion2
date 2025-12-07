@@ -72,8 +72,8 @@ export default function Navbar() {
     onClick={logout}
     className="bg-[var(--secondary)] hover:opacity-90 text-white px-3 sm:px-5 py-1.5 sm:py-2 rounded-lg font-semibold transition-all duration-300 shadow-md hover:shadow-lg flex-shrink-0 text-xs sm:text-sm"
   >
-    <span className="hidden sm:inline">Logout</span>
-    <span className="sm:hidden">Log</span>
+    <span className=" sm:inline">Logout</span>
+    {/* <span className="sm:hidden">Logout</span> */}
   </Button>
 </div>
         </div>
