@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Separator } from "@/components/ui/separator";
+// Separator is imported but not used, so it can be removed
 import { Plus, LogIn } from "lucide-react";
 import { toast } from "react-toastify";
 
@@ -17,14 +17,13 @@ export default function Collaborative() {
   const [joinRoomId, setJoinRoomId] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleCreateChange = (e) => {
+  // Simplified handler for all form fields
+  const handleInputChange = (e, setData) => {
     const { name, value } = e.target;
-    setCreateRoomData((prev) => ({ ...prev, [name]: value }));
+    setData((prev) => ({ ...prev, [name]: value }));
   };
-
-  const handleJoinChange = (e) => {
-    setJoinRoomId(e.target.value);
-  };
+  
+  // NOTE: API calls are currently simulated using toast.success
 
   const handleCreateSubmit = async (e) => {
     e.preventDefault();
@@ -43,10 +42,8 @@ export default function Collaborative() {
       setLoading(true);
       console.log("Creating Room with:", createRoomData);
       
-      // TODO: Replace with actual API call
-      // const res = await axios.post(`${API}/apii/collab/create`, createRoomData);
-      // toast.success("Room created successfully!");
-      // Handle room creation response
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
       toast.success("Room created successfully!");
       setCreateRoomData({ directoryName: "", description: "" });
@@ -69,11 +66,9 @@ export default function Collaborative() {
     try {
       setLoading(true);
       console.log("Joining Room:", joinRoomId);
-      
-      // TODO: Replace with actual API call
-      // const res = await axios.post(`${API}/apii/collab/join`, { roomId: joinRoomId });
-      // toast.success("Joined room successfully!");
-      // Handle join response
+
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
       toast.success("Joined room successfully!");
       setJoinRoomId("");
@@ -86,25 +81,26 @@ export default function Collaborative() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-background text-foreground px-4 py-8">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[var(--bg)] text-[var(--fg)] px-4 py-8">
       <div className="w-full max-w-2xl">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl sm:text-4xl font-bold mb-2">
-            Collaborate with <span className="text-primary">Friends</span>
+          <h1 className="text-3xl sm:text-4xl font-bold mb-2 text-[var(--fg)]">
+            Collaborate with <span className="text-[var(--primary)]">Friends</span>
           </h1>
-          <p className="text-sm sm:text-base text-muted-foreground">
+          <p className="text-sm sm:text-base text-[var(--muted)]">
             Create a new collaboration room or join an existing one to work together
           </p>
         </div>
 
         {/* Tabs Container */}
-        <Card className="bg-card border-border shadow-lg">
+        <Card className="bg-[var(--card)] border-[var(--border)] shadow-lg">
           <Tabs defaultValue="create" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 bg-muted rounded-none">
+            <TabsList className="grid w-full grid-cols-2 bg-[var(--border)] rounded-none">
               <TabsTrigger 
                 value="create"
-                className="gap-2 data-[state=active]:bg-card data-[state=active]:text-primary rounded-none border-b-2 border-transparent data-[state=active]:border-primary"
+                // Use var(--card) for active background, var(--primary) for active text/border
+                className="gap-2 data-[state=active]:bg-[var(--card)] data-[state=active]:text-[var(--primary)] rounded-none border-b-2 border-transparent data-[state=active]:border-[var(--primary)]"
               >
                 <Plus size={18} />
                 <span className="hidden sm:inline">Create Room</span>
@@ -112,7 +108,8 @@ export default function Collaborative() {
               </TabsTrigger>
               <TabsTrigger 
                 value="join"
-                className="gap-2 data-[state=active]:bg-card data-[state=active]:text-primary rounded-none border-b-2 border-transparent data-[state=active]:border-primary"
+                // Use var(--card) for active background, var(--primary) for active text/border
+                className="gap-2 data-[state=active]:bg-[var(--card)] data-[state=active]:text-[var(--primary)] rounded-none border-b-2 border-transparent data-[state=active]:border-[var(--primary)]"
               >
                 <LogIn size={18} />
                 <span className="hidden sm:inline">Join Room</span>
@@ -127,7 +124,7 @@ export default function Collaborative() {
                 <div className="space-y-2">
                   <label 
                     htmlFor="directoryName"
-                    className="text-sm font-semibold text-foreground"
+                    className="text-sm font-semibold text-[var(--fg)]"
                   >
                     Directory Name
                   </label>
@@ -137,8 +134,8 @@ export default function Collaborative() {
                     name="directoryName"
                     placeholder="Enter directory name"
                     value={createRoomData.directoryName}
-                    onChange={handleCreateChange}
-                    className="bg-muted border-border text-foreground"
+                    onChange={(e) => handleInputChange(e, setCreateRoomData)}
+                    className="bg-[var(--bg)] border-[var(--border)] text-[var(--fg)]"
                     required
                     disabled={loading}
                   />
@@ -148,7 +145,7 @@ export default function Collaborative() {
                 <div className="space-y-2">
                   <label 
                     htmlFor="description"
-                    className="text-sm font-semibold text-foreground"
+                    className="text-sm font-semibold text-[var(--fg)]"
                   >
                     Description
                   </label>
@@ -157,17 +154,17 @@ export default function Collaborative() {
                     name="description"
                     placeholder="Enter a brief description for the collaboration room"
                     value={createRoomData.description}
-                    onChange={handleCreateChange}
+                    onChange={(e) => handleInputChange(e, setCreateRoomData)}
                     rows={4}
-                    className="bg-muted border-border text-foreground resize-none"
+                    className="bg-[var(--bg)] border-[var(--border)] text-[var(--fg)] resize-none"
                     required
                     disabled={loading}
                   />
                 </div>
 
-                {/* Info Message */}
-                <div className="p-3 rounded-lg bg-primary/10 border border-primary/20">
-                  <p className="text-xs sm:text-sm text-primary">
+                {/* Info Message - Uses Primary Accent */}
+                <div className="p-3 rounded-lg bg-[var(--primary)]/10 border border-[var(--primary)]/20">
+                  <p className="text-xs sm:text-sm text-[var(--primary)]">
                     💡 Tip: You'll receive a unique room ID that you can share with others to join your collaboration.
                   </p>
                 </div>
@@ -176,11 +173,12 @@ export default function Collaborative() {
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold h-10 gap-2"
+                  // Uses Primary variable
+                  className="w-full bg-[var(--primary)] hover:bg-[var(--primary)]/90 text-[var(--primary-foreground)] font-semibold h-10 gap-2"
                 >
                   {loading ? (
                     <>
-                      <div className="h-4 w-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
+                      <div className="h-4 w-4 border-2 border-[var(--primary-foreground)] border-t-transparent rounded-full animate-spin" />
                       Creating...
                     </>
                   ) : (
@@ -200,7 +198,7 @@ export default function Collaborative() {
                 <div className="space-y-2">
                   <label 
                     htmlFor="roomId"
-                    className="text-sm font-semibold text-foreground"
+                    className="text-sm font-semibold text-[var(--fg)]"
                   >
                     Room ID
                   </label>
@@ -209,29 +207,30 @@ export default function Collaborative() {
                     type="text"
                     placeholder="Paste the room ID here"
                     value={joinRoomId}
-                    onChange={handleJoinChange}
-                    className="bg-muted border-border text-foreground text-center font-mono text-lg tracking-wider"
+                    onChange={(e) => setJoinRoomId(e.target.value)}
+                    className="bg-[var(--bg)] border-[var(--border)] text-[var(--fg)] text-center font-mono text-lg tracking-wider"
                     required
                     disabled={loading}
                   />
                 </div>
 
-                {/* Info Message */}
-                <div className="p-3 rounded-lg bg-blue-500/10 border border-blue-500/20">
-                  <p className="text-xs sm:text-sm text-blue-500">
+                {/* Info Message - INTEGRATED WITH PRIMARY THEME */}
+                <div className="p-3 rounded-lg bg-[var(--primary)]/10 border border-[var(--primary)]/20">
+                  <p className="text-xs sm:text-sm text-[var(--primary)]">
                     🔗 Ask the room creator to share the room ID with you to join the collaboration.
                   </p>
                 </div>
 
-                {/* Submit Button */}
+                {/* Submit Button - INTEGRATED WITH PRIMARY THEME */}
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold h-10 gap-2"
+                  // Uses Primary variable
+                  className="w-full bg-[var(--primary)] hover:bg-[var(--primary)]/90 text-[var(--primary-foreground)] font-semibold h-10 gap-2"
                 >
                   {loading ? (
                     <>
-                      <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <div className="h-4 w-4 border-2 border-[var(--primary-foreground)] border-t-transparent rounded-full animate-spin" />
                       Joining...
                     </>
                   ) : (
@@ -255,10 +254,11 @@ export default function Collaborative() {
           ].map((feature, idx) => (
             <div
               key={idx}
-              className="p-4 rounded-lg bg-card border border-border text-center space-y-2"
+              // Use theme variables for features card
+              className="p-4 rounded-lg bg-[var(--card)] border border-[var(--border)] text-center space-y-2"
             >
-              <p className="font-semibold text-foreground">{feature.title}</p>
-              <p className="text-xs sm:text-sm text-muted-foreground">
+              <p className="font-semibold text-[var(--fg)]">{feature.title}</p>
+              <p className="text-xs sm:text-sm text-[var(--muted)]">
                 {feature.desc}
               </p>
             </div>
