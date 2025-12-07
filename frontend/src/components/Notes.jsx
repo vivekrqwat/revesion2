@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import Upload from '../utils/Upload';
@@ -11,7 +11,7 @@ import { toast } from 'react-toastify';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Trash2, Copy, Maximize2, Download, DownloadCloudIcon,Mic, VolumeX  } from 'lucide-react';
+import { Trash2, Copy, Maximize2, Download, DownloadCloudIcon, Mic, VolumeX } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -29,13 +29,15 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import ReadMore from './Readmore.jsx';
 import Loading from '../pages/Loading.jsx';
-
 import TiptapEditor from './TipTapEditor.jsx';
 import ReadOnlyTipTap from './ReadOnlyTipTap.jsx';
 import { NoteSkeleton } from './Sekelton .jsx';
-import { useSpeechSynthesis } from 'react-speech-kit';
-
-
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+  TooltipProvider,
+} from "@/components/ui/tooltip"
 
 const API = import.meta.env.VITE_API_URL;
 
@@ -65,31 +67,59 @@ export default function Notes() {
   const [showcode, setshowcode] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [noteLoading, setNoteLoading] = useState(false);
-  const[audioid,setaudioid]=useState(true);
+  const [audioid, setaudioid] = useState(null);
+  const [isSpeaking, setIsSpeaking] = useState(false);
 
-  
-  const { speak, cancel, speaking } = useSpeechSynthesis();
+  // Reference to track current speech utterance
+  const utteranceRef = useRef(null);
 
-//   useEffect(() => {
-//     setaudio(speaking);
-// }, [speaking]);
+  // Initialize speech synthesis
+  const synth = window.speechSynthesis;
 
-    const Playpauseaudio = (desc,heading,id) => {
-     
-  if (speaking && audioid === id) {
-     console.log("speakin")
-    // If the hook reports speaking is TRUE, call stop/cancel
-    cancel();
-    setaudioid(null);
-  } else {
-    cancel();
-    setaudioid(id)
-    let b=heading+"."+desc
-    // If speaking is FALSE, start the speech
-    speak({ text: b });
-  }
-  // Note: We no longer need setaudio(!audio) here because the useEffect handles the update.
-}
+  const Playpauseaudio = (desc, heading, id) => {
+    // Stop all current speech
+    synth.cancel();
+    
+
+    if (isSpeaking && audioid === id) {
+      // If currently speaking this audio, stop it
+      setIsSpeaking(false);
+      setaudioid(null);
+    } else {
+      // Start new speech
+      setaudioid(id);
+      
+      // Strip HTML tags from description
+      const plainDesc = desc.replace(/<[^>]*>/g, '');
+      const textToSpeak = `${heading}. ${plainDesc}`;
+
+      const utterance = new SpeechSynthesisUtterance(textToSpeak);
+      
+      // Configure utterance
+      utterance.rate = 1; // Speed: 0.5 to 2
+      utterance.pitch = 1; // Pitch: 0 to 2
+      utterance.volume = 1; // Volume: 0 to 1
+
+      // Event handlers
+      utterance.onstart = () => setIsSpeaking(true);
+      
+      utterance.onend = () => {
+        setIsSpeaking(false);
+        setaudioid(null);
+      };
+
+      utterance.onerror = (error) => {
+          if (error.error === "interrupted") return; 
+        console.error('Speech synthesis error:', error);
+        // toast.error('Error playing audio');
+        setIsSpeaking(false);
+        setaudioid(null);
+      };
+
+      utteranceRef.current = utterance;
+      synth.speak(utterance);
+    }
+  };
 
   useEffect(() => {
     if (paramsUserId && user?._id) {
@@ -144,9 +174,9 @@ export default function Notes() {
       const res = await axios.get(`${API}/apii/notes/all/${noteid}`);
       setNotedata(res.data);
       setcontentdata(res.data.content);
-      setNoteLoading(false);  
+      setNoteLoading(false);
     } catch (err) {
-      setNoteLoading(false);  
+      setNoteLoading(false);
       console.log('Error fetching notes:', err);
     }
   };
@@ -219,15 +249,15 @@ export default function Notes() {
       const data = {
         content: [...(notedata?.content || []), noteToAdd],
       };
-      
+
       const response = await axios.put(`${API}/apii/notes/${noteid}`, data, {
         withCredentials: true,
       });
-      
+
       await axios.post(`${API}/apii/user/submission/${user._id}`, {}, {
         withCredentials: true,
       });
-      
+
       setNotedata((prev) => ({ ...prev, content: data.content }));
       setFormData({
         heading: '',
@@ -285,6 +315,13 @@ export default function Notes() {
     }
   };
 
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      synth.cancel();
+    };
+  }, []);
+
   useEffect(() => {
     if (noteid) {
       localStorage.setItem('noteid', noteid);
@@ -303,8 +340,8 @@ export default function Notes() {
         <div className="flex justify-between items-center flex-wrap gap-4">
           <h1 className="text-3xl font-bold">{notedata?.heading}</h1>
           <div className="flex items-center gap-3">
-            <Button 
-              onClick={Downloadpdf} 
+            <Button
+              onClick={Downloadpdf}
               className="p-2 h-9 w-9 flex items-center justify-center"
               variant="outline"
             >
@@ -431,7 +468,7 @@ export default function Notes() {
 
         {/* Notes Display */}
         <div className="space-y-6 max-h-[80vh] overflow-y-auto pl-2 w-full">
-          {filteredNotes.map((note, idx,key) => (
+          {filteredNotes.map((note, idx) => (
             <div key={idx} className="w-full">
               {/* Header Section */}
               <div className="pb-3">
@@ -446,27 +483,38 @@ export default function Notes() {
                       {note.heading}
                     </h2>
                   </div>
-                                        {speaking && audioid === note._id ? (
-    <Button
-      onClick={() => Playpauseaudio(note.desc, note.heading, note._id)}
-      // Use 'destructive' variant for stop/cancel action for visual emphasis
-      variant="destructive" 
-      size="sm"
-      className="bg-red-500 hover:bg-red-600"
-    >
-      <VolumeX size={16} className="mr-2" />
-    </Button>
-  ) : (
-    <Button
-      onClick={() => Playpauseaudio(note.desc, note.heading, note._id)}
-      // Use 'outline' or 'default' variant for play/start action
-      variant="outline" 
-      size="sm"
-      className="border-[var(--primary)] text-[var(--primary)] hover:bg-[var(--primary)]/10"
-    >
-      <Mic size={16} className="mr-2" />
-    </Button>
-  )}
+
+                  {isSpeaking && audioid === note._id ? (
+                    <Button
+                      onClick={() => Playpauseaudio(note.desc, note.heading, note._id)}
+                      variant="destructive"
+                      size="sm"
+                      className="bg-red-500 hover:bg-red-600 flex-shrink-0"
+                    >
+                      <VolumeX size={16} className="mr-2" />
+                   
+                    </Button>
+                  ) : (
+                   <TooltipProvider delayDuration={200}>
+                    <Tooltip>
+        <TooltipTrigger asChild>
+                    <Button
+                      onClick={() => Playpauseaudio(note.desc, note.heading, note._id)}
+                      variant="outline"
+                      size="sm"
+                      className="border-[var(--primary)] text-[var(--primary)] hover:bg-[var(--primary)]/10 flex-shrink-0"
+                    >
+                      <Mic size={16} className="mr-2" />
+                     
+                    </Button>
+                    </TooltipTrigger>
+        <TooltipContent>
+          <p>Play Description</p>
+        </TooltipContent>
+      </Tooltip>
+                     </TooltipProvider>
+                
+                  )}
 
                   {isOwner && (
                     <Button
@@ -478,8 +526,6 @@ export default function Notes() {
                       <Trash2 size={18} />
                     </Button>
                   )}
-
-                  
                 </div>
               </div>
 
@@ -502,7 +548,7 @@ export default function Notes() {
                       <Button
                         onClick={() => seteditid(null)}
                         variant="outline"
-                        className=" hover:bg-[var(--secondary)]"
+                        className="hover:bg-[var(--secondary)]"
                       >
                         Cancel
                       </Button>
