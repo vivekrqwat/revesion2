@@ -66,6 +66,7 @@ export default function Notes() {
   const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [noteLoading, setNoteLoading] = useState(false);
   const[audioid,setaudioid]=useState(true);
+
   
   const { speak, cancel, speaking } = useSpeechSynthesis();
 
