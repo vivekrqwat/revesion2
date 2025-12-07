@@ -451,7 +451,7 @@ export default function Notes() {
                       <Button
                         onClick={() => seteditid(null)}
                         variant="outline"
-                        className="border-[var(--border)]"
+                        className=" hover:bg-[var(--secondary)]"
                       >
                         Cancel
                       </Button>

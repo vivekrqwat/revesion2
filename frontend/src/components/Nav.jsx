@@ -21,9 +21,9 @@ export default function Navbar() {
       <div className="mx-auto px-3 sm:px-6 py-2 sm:py-4 flex justify-between items-center gap-2 sm:gap-4">
         
         {/* Logo - Smaller on mobile */}
-        <div className="flex-shrink-0 bg-[var(--color-card)] px-2 sm:px-4 py-1 sm:py-2 rounded-lg border border-[var(--border)] hover:shadow-md transition-all duration-300">
+        <div className="flex-shrink-0 bg-[var(--color-card)] px-2 sm:px-4 py-1 sm:py-2 rounded-lg border border-[var(--border)] hover:shadow-md transition-all duration-300 ml-9">
           <span className="text-[var(--primary)] font-bold text-sm sm:text-lg tracking-wider">
-         N
+         notehub
           </span>
         </div>
 

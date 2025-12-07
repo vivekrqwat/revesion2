@@ -205,9 +205,10 @@ export default function App() {
                 <Route path="/notes/:id" element={<Notes />} />
                 <Route path="/alldir" element={<AllDir />} />
                 <Route path="/allusers" element={<Alluser />} />
+                
+              <Route path="/profile/:id" element={<ProfilePage />} />
               </Route>
 
-              <Route path="/profile/:id" element={<ProfilePage />} />
               <Route path="/ai" element={<VoiceNoteHub />} />
             </>
           )}

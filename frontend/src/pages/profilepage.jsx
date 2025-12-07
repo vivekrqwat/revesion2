@@ -7,7 +7,7 @@ export default function ProfilePage() {
   return (
     <>
   
-     <Navbar></Navbar>
+     
      <Profile></Profile>
     </>
   );
