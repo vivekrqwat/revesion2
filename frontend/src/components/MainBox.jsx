@@ -7,7 +7,7 @@ export default function HomePage() {
   const [showForm, setShowForm] = useState(false);
 console.log("HomePage user data:", user.username);
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4">
+    <div className="flex justify-center items-center  p-4">
       {showForm ? (
         <div className="w-full max-w-2xl animate-fadeIn">
           <DirectoryForm handleClose={() => setShowForm(false)} />
@@ -90,7 +90,7 @@ console.log("HomePage user data:", user.username);
         </div>
       )}
 
-      <style jsx>{`
+      {/* <style jsx>{`
         @keyframes fadeIn {
           from {
             opacity: 0;
@@ -110,7 +110,7 @@ console.log("HomePage user data:", user.username);
         .delay-200 {
           animation-delay: 0.2s;
         }
-      `}</style>
+      `}</style> */}
     </div>
 //     <div className="min-h-screen bg-[#0a0f1a] text-blue-100 flex flex-col items-center justify-center px-4">
 

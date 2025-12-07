@@ -39,7 +39,7 @@ const API = import.meta.env.VITE_API_URL;
 
 export default function Notes() {
   const [noteid, setNoteid] = useState(localStorage.getItem('noteid'));
-  const { id: paramsUserId } = useParams(); // Get user ID from URL params
+  const { id: paramsUserId } = useParams();
   const [notedata, setNotedata] = useState();
   const [loading, setLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
@@ -50,8 +50,8 @@ export default function Notes() {
   const [imgsrc, setimgsrc] = useState('');
   const { user } = UserStore();
   const [isOwner, setIsOwner] = useState(false);
-    const [searchTerm, setSearchTerm] = useState('');
-     const [filteredNotes, setFilteredNotes] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredNotes, setFilteredNotes] = useState([]);
   const [formData, setFormData] = useState({
     heading: '',
     desc: '',
@@ -61,9 +61,9 @@ export default function Notes() {
     Approach: '',
   });
   const [showcode, setshowcode] = useState(false);
-  const [deleteConfirm, setDeleteConfirm] = useState(null); // { id: [noteid, contentId], itemName }
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
   const [noteLoading, setNoteLoading] = useState(false);
-  // Check if current user is the owner by comparing params user ID with logged-in user ID
+
   useEffect(() => {
     if (paramsUserId && user?._id) {
       setIsOwner(paramsUserId === user._id);
@@ -72,20 +72,18 @@ export default function Notes() {
     }
   }, [paramsUserId, user?._id]);
 
-   // Handle search
-   useEffect(() => {
-  if (!searchTerm.trim()) {
-    setFilteredNotes(contentdata);
-  } else {
-    const filtered = contentdata.filter(
-      (note) =>
-        note.heading?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        note.desc?.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredNotes(filtered);
-  }
-}, [searchTerm, contentdata]);
-  
+  useEffect(() => {
+    if (!searchTerm.trim()) {
+      setFilteredNotes(contentdata);
+    } else {
+      const filtered = contentdata.filter(
+        (note) =>
+          note.heading?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          note.desc?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredNotes(filtered);
+    }
+  }, [searchTerm, contentdata]);
 
   const edit = (idx) => {
     seteditid(idx);
@@ -123,7 +121,6 @@ export default function Notes() {
     } catch (err) {
       setNoteLoading(false);  
       console.log('Error fetching notes:', err);
-      // toast.error('Failed to fetch notes');
     }
   };
 
@@ -160,7 +157,6 @@ export default function Notes() {
     e.preventDefault();
     setLoading(true);
     try {
-      // Validate required fields
       if (!formData.heading.trim()) {
         toast.error('Please enter a heading');
         setLoading(false);
@@ -183,7 +179,6 @@ export default function Notes() {
       } catch (uploadErr) {
         console.error('Upload failed:', uploadErr);
         toast.error('Failed to upload image. Continuing without image...');
-        // Continue without image if upload fails
       }
 
       const noteToAdd = {
@@ -198,14 +193,9 @@ export default function Notes() {
         content: [...(notedata?.content || []), noteToAdd],
       };
       
-      console.log('Submitting note data:', data);
-      console.log('Note ID:', noteid);
-      
       const response = await axios.put(`${API}/apii/notes/${noteid}`, data, {
         withCredentials: true,
       });
-      
-      console.log('Note saved response:', response.data);
       
       await axios.post(`${API}/apii/user/submission/${user._id}`, {}, {
         withCredentials: true,
@@ -225,8 +215,6 @@ export default function Notes() {
       toast.success('Note added successfully');
     } catch (err) {
       console.error('Error saving note:', err);
-      console.error('Error response:', err.response?.data);
-      console.error('Error message:', err.message);
       toast.error(err.response?.data?.message || 'Failed to save note');
     } finally {
       setLoading(false);
@@ -251,32 +239,24 @@ export default function Notes() {
     }
   };
 
-//Download PDF
-const Downloadpdf = async () => {
-  try {
-    const res = await axios.get(`${API}/apii/pdfdownlaod/pdf/${noteid}`, {
-      responseType: 'blob',
-      withCredentials: true,  });
-       const blob = new Blob([res.data], { type: "application/pdf" });
-
-    const url = window.URL.createObjectURL(blob);
-      const a=document.createElement('a');
-      a.href=url;
-      a.download="mynotes.pdf";
+  const Downloadpdf = async () => {
+    try {
+      const res = await axios.get(`${API}/apii/pdfdownlaod/pdf/${noteid}`, {
+        responseType: 'blob',
+        withCredentials: true,
+      });
+      const blob = new Blob([res.data], { type: "application/pdf" });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = "mynotes.pdf";
       a.click();
       toast.success('PDF Downloaded Successfully');
-    
     } catch (err) {
-    console.log('Error downloading PDF:', err);
-    toast.error('Failed to download PDF');
-  }
-};
-//make font change 
-
-
-
-
-
+      console.log('Error downloading PDF:', err);
+      toast.error('Failed to download PDF');
+    }
+  };
 
   useEffect(() => {
     if (noteid) {
@@ -285,191 +265,183 @@ const Downloadpdf = async () => {
     }
   }, [noteid]);
 
-  if (!noteid) return <div className="text-center p-8">No note selected</div>;
-if(noteLoading) {return <NoteSkeleton></NoteSkeleton>}
+  if (!noteid) return <div className="text-center p-8 text-[var(--color-text)]">No note selected</div>;
+  if (noteLoading) return <NoteSkeleton />;
+
   return (
-    <div className="min-h-screen bg-background text-foreground p-2 sm:p-6">
+    <div className="min-h-screen bg-[var(--bg)] text-[var(--color-text)] p-2 sm:p-6 transition-colors duration-300">
       {show && <Speech setshow={setShow} desc={setFormData} />}
 
       <div className="max-w-4xl mx-auto space-y-6">
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center flex-wrap gap-4">
           <h1 className="text-3xl font-bold">{notedata?.heading}</h1>
           <div className="flex items-center gap-3">
-  {/* Small icon button */}
-  <Button 
-    onClick={Downloadpdf} 
-    className="p-2 h-9 w-9 flex items-center justify-center"
-    variant="outline"
-  >
-    <DownloadCloudIcon></DownloadCloudIcon>
-  </Button>
+            <Button 
+              onClick={Downloadpdf} 
+              className="p-2 h-9 w-9 flex items-center justify-center"
+              variant="outline"
+            >
+              <DownloadCloudIcon />
+            </Button>
 
-  {isOwner && (
-    <Button
-      onClick={() => setShowForm(!showForm)}
-      className="bg-primary hover:bg-primary/90 px-4"
-    >
-      {showForm ? 'Close' : 'Add Note'}
-    </Button>
-  )}
-</div>
-
-          
+            {isOwner && (
+              <Button
+                onClick={() => setShowForm(!showForm)}
+                className="bg-[var(--primary)] hover:bg-[var(--primary)]/80 text-white px-4"
+              >
+                {showForm ? 'Close' : 'Add Note'}
+              </Button>
+            )}
+          </div>
         </div>
 
         {/* Search Bar */}
-                <Card className="bg-card border-border">
-                  <CardContent className="p-3">
-                    <input
-                      type="text"
-                      placeholder="notes by heading or description..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="w-full px-5 py-2 rounded-lg bg-muted border border-border text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
-                    />
-                  </CardContent>
-                </Card>
+        <div className="bg-[var(--color-card)] border border-[var(--border)] rounded-lg p-3">
+          <input
+            type="text"
+            placeholder="Search notes by heading or description..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full px-5 py-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--color-text)] placeholder-[var(--muted)] focus:outline-none focus:ring-2 focus:ring-[var(--primary)]/50 transition-colors duration-300"
+          />
+        </div>
 
+        {/* Create Note Form */}
         {showForm && isOwner && (
-          <Card className="bg-card border-border">
-            <CardHeader>
-              <CardTitle>Create New Note</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <Input
-                  type="text"
-                  placeholder="Write heading"
-                  value={formData.heading}
-                  onChange={(e) =>
-                    setFormData({ ...formData, heading: e.target.value })
-                  }
-                  required
-                  className="bg-input border-border"
-                />
+          <div className="bg-[var(--color-card)] border border-[var(--border)] rounded-lg p-4 sm:p-6 space-y-4">
+            <h2 className="text-xl font-semibold">Create New Note</h2>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <Input
+                type="text"
+                placeholder="Write heading"
+                value={formData.heading}
+                onChange={(e) =>
+                  setFormData({ ...formData, heading: e.target.value })
+                }
+                required
+                className="bg-[var(--bg)] border-[var(--border)] text-[var(--color-text)]"
+              />
 
-                <TiptapEditor
-  value={formData.desc}
-  onChange={(value) => setFormData({ ...formData, desc: value })}
-  placeholder={showcode ? 'Write question' : 'Write description'}
-  className="min-h-[200px]"
-/>
+              <TiptapEditor
+                value={formData.desc}
+                onChange={(value) => setFormData({ ...formData, desc: value })}
+                placeholder={showcode ? 'Write question' : 'Write description'}
+                className="min-h-[200px]"
+              />
 
+              <Button
+                type="button"
+                onClick={() => setshowcode((prev) => !prev)}
+                variant="outline"
+                className="w-full border-[var(--border)]"
+              >
+                {showcode ? 'Hide Code' : 'Show Code'}
+              </Button>
+
+              {showcode && (
+                <>
+                  <Textarea
+                    placeholder="Write approach"
+                    value={formData.Approach}
+                    onChange={(e) =>
+                      setFormData({ ...formData, Approach: e.target.value })
+                    }
+                    rows={5}
+                    className="bg-[var(--bg)] border-[var(--border)] text-[var(--color-text)]"
+                  />
+                  <Textarea
+                    placeholder="Write code"
+                    value={formData.code}
+                    onChange={(e) =>
+                      setFormData({ ...formData, code: e.target.value })
+                    }
+                    rows={7}
+                    className="bg-[var(--bg)] border-[var(--border)] text-[var(--color-text)] font-mono"
+                  />
+                </>
+              )}
+
+              <Input
+                type="file"
+                onChange={(e) =>
+                  setFormData({ ...formData, image: e.target.files[0] })
+                }
+                className="bg-[var(--bg)] border-[var(--border)]"
+              />
+
+              <div className="flex gap-3">
+                {['yellow', 'green', 'red'].map((color) => (
+                  <button
+                    key={color}
+                    type="button"
+                    className={`w-8 h-8 rounded-md transition-transform hover:scale-110 ${getGradeColor(color)} ${
+                      formData.grade === color ? 'ring-2 ring-[var(--primary)]' : ''
+                    }`}
+                    onClick={() => setFormData({ ...formData, grade: color })}
+                  />
+                ))}
+              </div>
+
+              <div className="flex gap-3 flex-col sm:flex-row">
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  className="bg-[var(--primary)] hover:bg-[var(--primary)]/80 text-white flex-1"
+                >
+                  {loading ? 'Saving...' : 'Save'}
+                </Button>
                 <Button
                   type="button"
-                  onClick={() => setshowcode((prev) => !prev)}
-                  variant="outline"
-                  className="w-full border-border"
+                  onClick={() => setShow(true)}
+                  className="bg-[var(--secondary)] hover:bg-[var(--secondary)]/80 text-white flex-1"
                 >
-                  {showcode ? 'Hide Code' : 'Show Code'}
+                  Audio to Text
                 </Button>
-
-                {showcode && (
-                  <>
-                    <Textarea
-                      placeholder="Write approach"
-                      value={formData.Approach}
-                      onChange={(e) =>
-                        setFormData({ ...formData, Approach: e.target.value })
-                      }
-                      rows={5}
-                      className="bg-input border-border"
-                    />
-                    <Textarea
-                      placeholder="Write code"
-                      value={formData.code}
-                      onChange={(e) =>
-                        setFormData({ ...formData, code: e.target.value })
-                      }
-                      rows={7}
-                      className="bg-input border-border font-mono"
-                    />
-                  </>
-                )}
-
-                <Input
-                  type="file"
-                  onChange={(e) =>
-                    setFormData({ ...formData, image: e.target.files[0] })
-                  }
-                  className="bg-input border-border"
-                />
-
-                <div className="flex gap-3">
-                  {['yellow', 'green', 'red'].map((color) => (
-                    <button
-                      key={color}
-                      type="button"
-                      className={`w-8 h-8 rounded-md transition-transform hover:scale-110 ${getGradeColor(color)} ${
-                        formData.grade === color ? 'ring-2 ring-ring' : ''
-                      }`}
-                      onClick={() => setFormData({ ...formData, grade: color })}
-                    />
-                  ))}
-                </div>
-
-                <div className="flex gap-3 flex-col sm:flex-row">
-                  <Button
-                    type="submit"
-                    disabled={loading}
-                    className="bg-primary hover:bg-primary/90 flex-1"
-                  >
-                    {loading ? 'Saving...' : 'Save'}
-                  </Button>
-                  <Button
-                    type="button"
-                    onClick={() => setShow(true)}
-                    className="bg-secondary hover:bg-secondary/90 flex-1"
-                  >
-                    Audio to Text
-                  </Button>
-                </div>
-              </form>
-            </CardContent>
-          </Card>
+              </div>
+            </form>
+          </div>
         )}
 
-        {/* <div className="space-y-4 max-h-[80vh] overflow-y-auto pr-2">
+        {/* Notes Display */}
+        <div className="space-y-6 max-h-[80vh] overflow-y-auto pl-2 w-full">
           {filteredNotes.map((note, idx) => (
-            <Card
-              key={idx}
-              className="bg-card border-border hover:border-primary/50 transition-colors"
-            >
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-3">
+            <div key={idx} className="w-full">
+              {/* Header Section */}
+              <div className="pb-3">
+                <div className="flex items-center justify-between gap-3 w-full flex-wrap">
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
                     <div
-                      className={`w-4 h-4 rounded-md ${getGradeColor(
+                      className={`w-4 h-4 rounded-md flex-shrink-0 ${getGradeColor(
                         note.grade
                       )}`}
                     />
-                    <CardTitle className="text-2xl capitalize">
+                    <h2 className="text-2xl font-semibold capitalize break-words flex-1">
                       {note.heading}
-                    </CardTitle>
+                    </h2>
                   </div>
                   {isOwner && (
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => handleDeleteConfirm(note._id, note.heading)}
-                      className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                      className="text-red-500 hover:text-red-600 hover:bg-red-500/10 flex-shrink-0"
                     >
                       <Trash2 size={18} />
                     </Button>
                   )}
                 </div>
-              </CardHeader>
+              </div>
 
-              <CardContent className="space-y-4">
+              {/* Content Section */}
+              <div className="space-y-4 w-full">
                 {editid === idx ? (
-                  <div className="space-y-3">
-                    <Textarea
+                  <div className="space-y-3 w-full">
+                    <TiptapEditor
                       value={descvalue}
-                      onChange={(e) => setdescvalue(e.target.value)}
-                      rows={18}
-                      className="bg-input border-border font-mono"
+                      onChange={setdescvalue}
+                      className="min-h-[300px]"
                     />
-                    <div className="flex gap-3 justify-end">
+                    <div className="flex gap-3 justify-end flex-wrap">
                       <Button
                         onClick={() => saveDesc(note._id)}
                         className="bg-green-600 hover:bg-green-700"
@@ -479,26 +451,25 @@ if(noteLoading) {return <NoteSkeleton></NoteSkeleton>}
                       <Button
                         onClick={() => seteditid(null)}
                         variant="outline"
-                        className="border-border"
+                        className="border-[var(--border)]"
                       >
                         Cancel
                       </Button>
                     </div>
                   </div>
                 ) : (
-                 <div
-  onClick={() => isOwner && edit(idx)}
-  className="text-base text-muted-foreground whitespace-pre-wrap leading-relaxed
-  cursor-pointer hover:text-foreground transition-colors"
->
-  <ReadMore text={note.desc} onEdit={isOwner ? () => edit(idx) : null} />
-</div>
+                  <div
+                    onClick={() => isOwner && edit(idx)}
+                    className="w-full cursor-pointer"
+                  >
+                    <ReadOnlyTipTap content={note.desc} />
+                  </div>
                 )}
 
                 {note.Approach && (
                   <>
-                    <hr className="border-border" />
-                    <p className="text-base text-muted-foreground whitespace-pre-wrap leading-relaxed">
+                    <hr className="border-[var(--border)]" />
+                    <p className="text-base text-[var(--muted)] whitespace-pre-wrap leading-relaxed w-full break-words">
                       {note.Approach}
                     </p>
                   </>
@@ -513,174 +484,55 @@ if(noteLoading) {return <NoteSkeleton></NoteSkeleton>}
                         className="rounded-md w-full cursor-pointer hover:opacity-90 transition-opacity"
                       />
                     </DialogTrigger>
-                    <DialogContent className="max-w-4xl bg-card border-border">
-                     <img
-  src={note.img}
-  alt="note-img-expanded"
-  className="w-full aspect-video object-cover rounded-md object-center"
-/>
+                    <DialogContent className="max-w-4xl bg-[var(--color-card)] border-[var(--border)]">
+                      <img
+                        src={note.img}
+                        alt="note-img-expanded"
+                        className="w-full aspect-video object-cover rounded-md"
+                      />
                     </DialogContent>
                   </Dialog>
                 )}
 
                 {note.code && (
                   <>
-                    <hr className="border-border" />
+                    <hr className="border-[var(--border)]" />
                     <Button
                       onClick={() => handlecopy(note.code)}
                       size="sm"
                       variant="outline"
-                      className="border-border"
+                      className="border-[var(--border)]"
                     >
                       <Copy size={16} className="mr-2" />
                       Copy Code
                     </Button>
-                    <CodeEditor cd={note.code} />
+                    <div className="w-full overflow-x-auto">
+                      <CodeEditor cd={note.code} />
+                    </div>
                   </>
                 )}
-              </CardContent>
-            </Card>
-          ))}
-        </div> */}
+              </div>
 
-      {/* changing UI of notes display to without using Card component */}
-   <div className="space-y-6 max-h-[80vh] overflow-y-auto pl-4 w-full">
-  {filteredNotes.map((note, idx) => (
-    <div key={idx} className="w-full">
-      {/* Header Section */}
-      <div className="pb-3">
-        <div className="flex items-center justify-between gap-3 w-full">
-          <div className="flex items-center gap-3 flex-1 min-w-0">
-            <div
-              className={`w-4 h-4 rounded-md flex-shrink-0 ${getGradeColor(
-                note.grade
-              )}`}
-            />
-            <h2 className="text-2xl font-semibold capitalize break-words flex-1">
-              {note.heading}
-            </h2>
-          </div>
-          {isOwner && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => handleDeleteConfirm(note._id, note.heading)}
-              className="text-destructive hover:text-destructive hover:bg-destructive/10 flex-shrink-0"
-            >
-              <Trash2 size={18} />
-            </Button>
-          )}
-        </div>
-      </div>
-
-      {/* Content Section */}
-      <div className="space-y-4 w-full">
-      {editid === idx ? (
-  <div className="space-y-3 w-full">
-    <TiptapEditor
-      value={descvalue}
-      onChange={setdescvalue}
-      className="min-h-[300px]"
-    />
-    <div className="flex gap-3 justify-end">
-      <Button
-        onClick={() => saveDesc(note._id)}
-        className="bg-green-600 hover:bg-green-700"
-      >
-        Save
-      </Button>
-      <Button
-        onClick={() => seteditid(null)}
-        variant="outline"
-        className="border-border"
-      >
-        Cancel
-      </Button>
-    </div>
-  </div>
-) : (
- <div
-    onClick={() => isOwner && edit(idx)}
-    className="w-full cursor-pointer"
-  >
-    <ReadOnlyTipTap content={note.desc} />
-  </div>
-)}
-
-        {note.Approach && (
-          <>
-            <hr className="border-border" />
-            <p className="text-base text-muted-foreground whitespace-pre-wrap leading-relaxed w-full break-words">
-              {note.Approach}
-            </p>
-          </>
-        )}
-
-        {note.img && (
-          <Dialog>
-            <DialogTrigger asChild>
-              <img
-                src={note.img}
-                alt="note-img"
-                className="rounded-md w-full cursor-pointer hover:opacity-90 transition-opacity"
-              />
-            </DialogTrigger>
-            <DialogContent className="max-w-4xl bg-card border-border">
-              <img
-                src={note.img}
-                alt="note-img-expanded"
-                className="w-full aspect-video object-cover rounded-md object-center"
-              />
-            </DialogContent>
-          </Dialog>
-        )}
-
-        {note.code && (
-          <>
-            <hr className="border-border" />
-            <Button
-              onClick={() => handlecopy(note.code)}
-              size="sm"
-              variant="outline"
-              className="border-border"
-            >
-              <Copy size={16} className="mr-2" />
-              Copy Code
-            </Button>
-            <div className="w-full overflow-x-auto">
-              <CodeEditor cd={note.code} />
+              {/* Separator */}
+              {idx < filteredNotes.length - 1 && (
+                <hr className="border-t border-[var(--border)]/50 mt-10" />
+              )}
             </div>
-          </>
-        )}
-      </div>
-
-      {/* Separator line - only show if not the last item */}
-      {idx < filteredNotes.length - 1 && (
-<hr className="border-t-1 border-white/50 mt-10" />
-
-      )}
-    </div>
-  ))}
-</div>
-
-
-      
-
-
-
+          ))}
+        </div>
 
         {/* Delete Confirmation Dialog */}
         <AlertDialog open={!!deleteConfirm} onOpenChange={(open) => !open && setDeleteConfirm(null)}>
-          <AlertDialogContent>
+          <AlertDialogContent className="bg-[var(--color-card)] border-[var(--border)]">
             <AlertDialogHeader>
-              <AlertDialogTitle>Delete Note</AlertDialogTitle>
-              <AlertDialogDescription>
+              <AlertDialogTitle className="text-[var(--color-text)]">Delete Note</AlertDialogTitle>
+              <AlertDialogDescription className="text-[var(--muted)]">
                 {`Are you sure you want to delete the note "${deleteConfirm?.itemName}"? This action cannot be undone.`}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <div className="flex gap-3 justify-end">
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction onClick={confirmDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+              <AlertDialogCancel className="border-[var(--border)]">Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={confirmDelete} className="bg-red-600 text-white hover:bg-red-700">
                 Delete
               </AlertDialogAction>
             </div>

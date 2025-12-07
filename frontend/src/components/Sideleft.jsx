@@ -85,7 +85,7 @@ export default function SideLeft() {
                   "h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0 transition-transform duration-200",
                   active ? "text-primary" : "group-hover:scale-110"
                 )} />
-                <span className="hidden sm:inline text-xs font-medium truncate">
+                <span className="text-xs font-medium truncate">
                   {item.label}
                 </span>
                 {active && (

@@ -4,88 +4,91 @@ import ProfileRight from "../components/Profile";
 import SideLeft from "../components/Sideleft";
 import { Outlet } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
-import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
 export function Layout() {
   const [isSidebarVisible, setIsSidebarVisible] = useState(() => {
-    // Initialize from localStorage
     const saved = localStorage.getItem("sidebarVisible");
     return saved !== null ? JSON.parse(saved) : true;
   });
 
-  // Persist sidebar state to localStorage
   useEffect(() => {
     localStorage.setItem("sidebarVisible", JSON.stringify(isSidebarVisible));
   }, [isSidebarVisible]);
 
-  // Auto-show sidebar on desktop when window is resized
   useEffect(() => {
     const handleResize = () => {
-      const isDesktop = window.innerWidth >= 768; // md breakpoint
+      const isDesktop = window.innerWidth >= 768;
       if (isDesktop) {
         setIsSidebarVisible(true);
       }
     };
 
     window.addEventListener("resize", handleResize);
-    handleResize(); // Check on mount
+    handleResize();
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   return (
-    <div className="flex h-screen w-full bg-[hsl(215,20%,11%)] text-[hsl(215,40%,96%)]">
+    <div className="flex h-screen w-full bg-[var(--bg)] text-[var(--fg)] transition-colors duration-300">
       
-      {/* Top Left Toggle Button - Fixed Position (Mobile Only) */}
+      {/* Mobile Toggle Button */}
       <button
         className="
-          fixed top-2 left-2 z-50
+          fixed top-3 left-3 z-[60]
           flex items-center justify-center
-          w-8 h-8 bg-[hsl(215,28%,24%)]
-          text-[hsl(215,40%,96%)] rounded-md
-          hover:bg-[hsl(215,28%,30%)]
-          transition-all duration-300
-          border border-[hsl(215,23%,24%)]
+          w-8 h-8
+          bg-[var(--color-card)]
+          text-[var(--color-text)] 
+          rounded-md
+          hover:bg-[var(--border)]
+          active:scale-95
+          transition-all duration-200
+          border border-[var(--border)]
           shadow-md
           md:hidden
-          focus:outline-none focus:ring-2 focus:ring-[hsl(215,75%,60%)]
         "
         onClick={() => setIsSidebarVisible(!isSidebarVisible)}
-        aria-label={isSidebarVisible ? "Hide sidebar" : "Show sidebar"}
       >
-        <span className="transform hover:scale-110 transition-transform duration-200">
-          {isSidebarVisible ? <FaTimes size={12} /> : <FaBars size={12} />}
-        </span>
+        {isSidebarVisible ? <FaTimes size={14} /> : <FaBars size={14} />}
       </button>
 
-      {/* Sidebar */}
+      {/* Mobile Sidebar Overlay */}
       <aside
         className={`
-          transition-all duration-500 ease-in-out
-          ${
-            isSidebarVisible
-              ? "w-16 sm:w-20 md:w-24 lg:w-28 xl:w-[10%] opacity-100"
-              : "w-0 opacity-0"
-          }
-          overflow-hidden bg-[hsl(215,22%,10%)] border-r border-[hsl(215,23%,24%)] shadow-xl 
+          fixed top-0 left-0 h-full z-50
+          w-52 bg-[var(--color-card)] border-r border-[var(--border)] shadow-lg
+          transition-all duration-300 ease-out will-change-transform
+          md:hidden
+          ${isSidebarVisible ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0"}
         `}
       >
         <SideLeft />
       </aside>
 
+      {/* Desktop Sidebar (Static) */}
+      <aside className="
+        hidden md:flex flex-col
+        w-24 lg:w-28 xl:w-[10%]
+        bg-[var(--color-card)] border-r border-[var(--border)] shadow-lg
+        transition-colors duration-300
+      ">
+        <SideLeft />
+      </aside>
+
       {/* Main Content Area */}
-      <div className="flex flex-col flex-1 overflow-hidden">
+      <div className="flex flex-col flex-1 overflow-hidden transition-colors duration-300">
         
         {/* Navbar */}
-        <div className="border-b border-[hsl(215,23%,24%)] shadow-md">
+        <div className="flex-shrink-0 border-b border-[var(--border)] shadow-sm transition-colors duration-300">
           <Navbar />
         </div>
 
         {/* Content Layout */}
         <div className="flex flex-1 overflow-hidden">
           
-          {/* Main Content - More space, less margin */}
-          <main className="flex-1 overflow-y-auto bg-gradient-to-br from-[hsl(215,20%,11%)] via-[hsl(215,20%,13%)] to-[hsl(215,20%,11%)]">
-            <div className="h-full p-1 md:p-2 lg:p-3">
+          {/* Main Content */}
+          <main className="flex-1 overflow-y-auto overflow-x-hidden ">
+            <div className="h-full p-2 md:p-4 lg:p-6">
               <div className="max-w-full mx-auto h-full">
                 <Outlet />
               </div>
@@ -93,7 +96,12 @@ export function Layout() {
           </main>
 
           {/* Right Sidebar - Profile */}
-          <aside className="hidden lg:flex flex-col w-64 xl:w-72 border-l border-[hsl(215,23%,24%)] bg-[hsl(215,22%,10%)] shadow-xl overflow-y-auto">
+          <aside className="
+            hidden lg:flex flex-col
+            w-64 xl:w-72 border-l border-[var(--border)]
+            bg-[var(--color-card)] shadow-lg
+            overflow-y-auto transition-colors duration-300
+          ">
             <ProfileRight />
           </aside>
           

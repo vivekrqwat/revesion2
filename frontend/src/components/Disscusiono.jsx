@@ -100,15 +100,12 @@ export default function Discussion() {
     }
   };
 
-  // Navigate to user profile when avatar is clicked
   const handleAvatarClick = (userId) => {
     console.log("Navigating to profile with user ID:", userId);
-    // Use the uid field if available, otherwise use _id
     const profileId = userId;
     navigate(`/profile/${profileId}`);
   };
 
-  // Like/Unlike post
   const handleLike = async (postId) => {
     try {
       const res = await axios.put(
@@ -116,7 +113,6 @@ export default function Discussion() {
         {},
         { withCredentials: true }
       );
-      // Update the post in the state
       setPost(post.map(p => p._id === postId ? res.data : p));
     } catch (e) {
       console.log(e);
@@ -124,7 +120,6 @@ export default function Discussion() {
     }
   };
 
-  // Add comment
   const handleAddComment = async (postId, text) => {
     if (!text.trim()) {
       toast.warning("Comment cannot be empty");
@@ -137,7 +132,6 @@ export default function Discussion() {
         { text },
         { withCredentials: true }
       );
-      // Update the post in the state
       setPost(post.map(p => p._id === postId ? res.data : p));
       setCommentText({ ...commentText, [postId]: "" });
       toast.success("Comment added!");
@@ -147,14 +141,12 @@ export default function Discussion() {
     }
   };
 
-  // Delete comment
   const handleDeleteComment = async (postId, commentId) => {
     try {
       const res = await axios.delete(
         `${API}/apii/post/comment/${postId}/${commentId}`,
         { withCredentials: true }
       );
-      // Update the post in the state
       setPost(post.map(p => p._id === postId ? res.data : p));
       toast.success("Comment deleted!");
     } catch (e) {
@@ -163,23 +155,21 @@ export default function Discussion() {
     }
   };
 
-  //date
   const formatDateOnly = (date) => {
-  return new Date(date).toLocaleDateString("en-IN", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  });
-};
-
+    return new Date(date).toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  };
 
   return (
-    <div className="h-[calc(100vh-100px)] w-full bg-background rounded-lg p-4 flex flex-col overflow-hidden relative ">
+    <div className="h-[calc(100vh-100px)] w-full bg-[var(--bg)] rounded-lg p-4 flex flex-col overflow-hidden relative transition-colors duration-300">
       {/* Loading State */}
       {loading && (
         <div className="flex-1 flex flex-col items-center justify-center space-y-4">
-          <Loader2 className="h-10 w-10 text-primary animate-spin" />
-          <p className="text-sm text-muted-foreground">
+          <Loader2 className="h-10 w-10 text-[var(--primary)] animate-spin" />
+          <p className="text-sm text-[var(--muted)]">
             Publishing your post...
           </p>
         </div>
@@ -192,115 +182,95 @@ export default function Discussion() {
             post.map((p) => (
               <Card
                 key={p._id}
-                className="bg-card border-border hover:border-primary/50 transition-colors"
+                className="bg-[var(--color-card)] border-[var(--border)] hover:border-[var(--primary)]/50 transition-colors"
               >
                 <CardContent className="p-4 space-y-3">
                   {/* User Info */}
                   <div className="flex items-center gap-3">
                     <Avatar
-                    
                       className="h-8 w-8 cursor-pointer hover:opacity-80 transition-opacity"
                       onClick={() => handleAvatarClick(p.uid || p._id)}
                     >
-                     <AvatarImage src='https://api-assets.clashofclans.com/leagues/288/U2acNDRaR5rQDu4Z6pQKaGcjWm9dkSnHMAPZCXrHPB4.png'  alt={p.username}/>
-                      
-                      {/* <AvatarFallback className="bg-primary text-primary-foreground text-xs font-semibold">
-                        {p.username
-                          ?.split(" ")
-                          .map((n) => n[0])
-                          .join("")
-                          .toUpperCase() || "U"}
-                      </AvatarFallback> */}
+                      <AvatarImage src='https://api-assets.clashofclans.com/leagues/288/U2acNDRaR5rQDu4Z6pQKaGcjWm9dkSnHMAPZCXrHPB4.png' alt={p.username} />
                     </Avatar>
                     <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-sm truncate">
+                      <p className="font-semibold text-sm truncate text-[var(--color-text)]">
                         {p.username}
                       </p>
-                      <p className="text-xs text-muted-foreground truncate">
+                      <p className="text-xs text-[var(--muted)] truncate">
                         {p.email}
                       </p>
                     </div>
-                     {/* Date on far right */}
-    <div className="text-xs text-muted-foreground ml-auto">
-      {formatDateOnly(p.createdAt)}
-    </div>
+                    <div className="text-xs text-[var(--muted)] ml-auto">
+                      {formatDateOnly(p.createdAt)}
+                    </div>
                   </div>
-                        {console.log("Post description:", p.createdAt)}
+
                   {/* Message */}
-                  {/* <p className="text-sm text-foreground leading-relaxed">
-                    {p.desc}
-                  </p> */}
-                  <ReadMore text={p.desc}></ReadMore>
+                  <ReadMore text={p.desc} />
 
                   {/* Image */}
                   {p.img && (
                     <img
-  src={p.img}
-  alt="post-image"
-  className="w-full max-h-96 object-contain object-center rounded-lg bg-black"
-/>
+                      src={p.img}
+                      alt="post-image"
+                      className="w-full max-h-96 object-contain object-center rounded-lg bg-[var(--border)]"
+                    />
                   )}
 
                   {/* Like and Comment Section */}
+                  <div className="pt-3 border-t border-[var(--border)] space-y-3">
 
-                 <div className="pt-3 border-t border-border space-y-3">
+                    <div className="flex items-center gap-4">
+                      {/* Like Button */}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleLike(p._id)}
+                        className={`gap-2 ${
+                          p.likes?.includes(user?._id)
+                            ? "text-red-500 hover:text-red-600"
+                            : "text-[var(--muted)] hover:text-[var(--color-text)]"
+                        }`}
+                      >
+                        <Heart
+                          size={18}
+                          fill={p.likes?.includes(user?._id) ? "currentColor" : "none"}
+                        />
+                        <span className="text-xs">{p.likes?.length || 0}</span>
+                      </Button>
 
-  <div className="flex items-center gap-4">
-
-    {/* Like Button */}
-    <Button
-      variant="ghost"
-      size="sm"
-      onClick={() => handleLike(p._id)}
-      className={`gap-2 ${
-        p.likes?.includes(user?._id)
-          ? "text-red-500 hover:text-red-600"
-          : "text-muted-foreground hover:text-foreground"
-      }`}
-    >
-      <Heart
-        size={18}
-        fill={p.likes?.includes(user?._id) ? "currentColor" : "none"}
-      />
-      <span className="text-xs">{p.likes?.length || 0}</span>
-    </Button>
-
-    {/* Comments Button */}
-    <Button
-      variant="ghost"
-      size="sm"
-      onClick={() =>
-        setExpandedComments({
-          ...expandedComments,
-          [p._id]: !expandedComments[p._id],
-        })
-      }
-      className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors"
-    >
-      <MessageCircle size={10} />
-      <span>{p.comments?.length || 0} comments</span>
-    </Button>
-
-   
-
-  </div>
-
-                    
+                      {/* Comments Button */}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() =>
+                          setExpandedComments({
+                            ...expandedComments,
+                            [p._id]: !expandedComments[p._id],
+                          })
+                        }
+                        className="flex items-center gap-2 text-xs text-[var(--muted)] hover:text-[var(--color-text)] transition-colors"
+                      >
+                        <MessageCircle size={10} />
+                        <span>{p.comments?.length || 0} comments</span>
+                      </Button>
+                    </div>
 
                     {/* Comments Section - Show/Hide on Click */}
                     {expandedComments[p._id] && (
-                      <div className="space-y-3 pt-2 border-t border-border/50">
+                      <div className="space-y-3 pt-2 border-t border-[var(--border)]/50">
                         {/* Display Comments */}
                         {p.comments && p.comments.length > 0 && (
                           <div className="space-y-2 max-h-64 overflow-y-auto">
                             {p.comments.map((comment) => (
-                              <div key={comment._id} className="text-xs space-y-1 bg-muted/50 p-2 rounded">
+                              <div key={comment._id} className="text-xs space-y-1 bg-[var(--border)]/20 p-2 rounded">
                                 <div className="flex items-start justify-between gap-2">
                                   <div className="flex-1">
-                                    <p className="font-semibold text-foreground">
+                                    <p className="font-semibold text-[var(--color-text)]">
                                       {comment.userName}
                                     </p>
-                                    <p className="text-muted-foreground break-words">
+                                    <p className="text-[var(--muted)] break-words">
                                       {comment.text}
                                     </p>
                                   </div>
@@ -311,7 +281,7 @@ export default function Discussion() {
                                       onClick={() =>
                                         handleDeleteComment(p._id, comment._id)
                                       }
-                                      className="text-destructive hover:text-destructive/80 h-auto p-1 flex-shrink-0"
+                                      className="text-red-500 hover:text-red-600 h-auto p-1 flex-shrink-0"
                                     >
                                       <Trash2 size={14} />
                                     </Button>
@@ -324,20 +294,20 @@ export default function Discussion() {
 
                         {/* No Comments Message */}
                         {(!p.comments || p.comments.length === 0) && (
-                          <p className="text-xs text-muted-foreground text-center py-2">
+                          <p className="text-xs text-[var(--muted)] text-center py-2">
                             No comments yet. Be the first to comment!
                           </p>
                         )}
 
                         {/* Add Comment Input */}
-                        <div className="flex gap-2 pt-2 border-t border-border/50">
+                        <div className="flex gap-2 pt-2 border-t border-[var(--border)]/50">
                           <Input
                             placeholder="Add a comment..."
                             value={commentText[p._id] || ""}
                             onChange={(e) =>
                               setCommentText({ ...commentText, [p._id]: e.target.value })
                             }
-                            className="h-8 text-xs bg-input border-border"
+                            className="h-8 text-xs bg-[var(--bg)] border-[var(--border)] text-[var(--color-text)]"
                             onKeyDown={(e) => {
                               if (e.key === "Enter") {
                                 handleAddComment(p._id, commentText[p._id]);
@@ -349,7 +319,7 @@ export default function Discussion() {
                             onClick={() =>
                               handleAddComment(p._id, commentText[p._id])
                             }
-                            className="h-8 px-2 bg-primary hover:bg-primary/90"
+                            className="h-8 px-2 bg-[var(--primary)] hover:bg-[var(--primary)]/80 text-white"
                           >
                             <Send size={14} />
                           </Button>
@@ -357,15 +327,12 @@ export default function Discussion() {
                       </div>
                     )}
                   </div>
-                  
-                  
-
                 </CardContent>
               </Card>
             ))
           ) : (
             <div className="flex items-center justify-center h-full">
-              <p className="text-muted-foreground text-center">
+              <p className="text-[var(--muted)] text-center">
                 No posts yet. Be the first to share!
               </p>
             </div>
@@ -378,7 +345,7 @@ export default function Discussion() {
         <DialogTrigger asChild>
           <Button
             size="lg"
-            className="fixed bottom-6 left-6 rounded-full w-14 h-14 p-0 bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all hover:scale-110"
+            className="fixed bottom-6 left-6 rounded-full w-14 h-14 p-0 bg-[var(--primary)] hover:bg-[var(--primary)]/80 text-white shadow-lg hover:shadow-xl transition-all hover:scale-110"
             title="Create Post"
           >
             <Plus className="h-6 w-6" />
@@ -386,15 +353,15 @@ export default function Discussion() {
         </DialogTrigger>
 
         {/* Create Post Dialog */}
-        <DialogContent className="bg-card border-border max-w-md">
+        <DialogContent className="bg-[var(--color-card)] border-[var(--border)]">
           <DialogHeader>
-            <DialogTitle>Create a New Post</DialogTitle>
+            <DialogTitle className="text-[var(--color-text)]">Create a New Post</DialogTitle>
           </DialogHeader>
 
           <div className="space-y-4">
             {/* Text Input */}
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-foreground">
+              <label className="text-sm font-semibold text-[var(--color-text)]">
                 What's on your mind?
               </label>
               <Textarea
@@ -402,7 +369,7 @@ export default function Discussion() {
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Share your thoughts..."
                 rows={5}
-                className="bg-muted border-border text-foreground resize-none"
+                className="bg-[var(--bg)] border-[var(--border)] text-[var(--color-text)] placeholder-[var(--muted)] resize-none"
                 disabled={loading}
               />
             </div>
@@ -410,21 +377,21 @@ export default function Discussion() {
             {/* Image Preview */}
             {previewImage && (
               <div className="space-y-2">
-                <p className="text-sm font-semibold text-foreground">
+                <p className="text-sm font-semibold text-[var(--color-text)]">
                   Image Preview
                 </p>
                 <div className="relative inline-block w-full">
                   <img
                     src={previewImage}
                     alt="preview"
-                    className="w-full max-h-48 object-cover rounded-lg border border-border"
+                    className="w-full max-h-48 object-cover rounded-lg border border-[var(--border)]"
                   />
                   <button
                     onClick={() => {
                       setImage(null);
                       setPreviewImage(null);
                     }}
-                    className="absolute -top-2 -right-2 bg-destructive text-destructive-foreground rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-destructive/90 transition-colors"
+                    className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600 transition-colors"
                   >
                     <X size={16} />
                   </button>
@@ -434,12 +401,12 @@ export default function Discussion() {
 
             {/* Image Upload */}
             <div>
-              <label className="text-sm font-semibold text-foreground block mb-2">
+              <label className="text-sm font-semibold text-[var(--color-text)] block mb-2">
                 Add Image
               </label>
-              <label className="cursor-pointer flex items-center gap-2 p-3 rounded-lg border-2 border-dashed border-border hover:border-primary/50 transition-colors">
-                <ImagePlus className="h-5 w-5 text-muted-foreground" />
-                <span className="text-sm text-muted-foreground">
+              <label className="cursor-pointer flex items-center gap-2 p-3 rounded-lg border-2 border-dashed border-[var(--border)] hover:border-[var(--primary)]/50 transition-colors">
+                <ImagePlus className="h-5 w-5 text-[var(--muted)]" />
+                <span className="text-sm text-[var(--muted)]">
                   {image ? "Change Image" : "Upload Image"}
                 </span>
                 <input
@@ -463,14 +430,14 @@ export default function Discussion() {
                   setPreviewImage(null);
                 }}
                 disabled={loading}
-                className="border-border"
+                className="border-[var(--border)] text-[var(--color-text)]"
               >
                 Cancel
               </Button>
               <Button
                 onClick={handleSend}
                 disabled={loading || !message.trim()}
-                className="bg-primary hover:bg-primary/90 gap-2"
+                className="bg-[var(--primary)] hover:bg-[var(--primary)]/80 text-white gap-2"
               >
                 {loading ? (
                   <>

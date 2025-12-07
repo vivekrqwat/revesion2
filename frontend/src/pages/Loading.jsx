@@ -6,7 +6,7 @@ export default function Loading({msg}) {
       <div className="flex flex-col items-center space-y-6 border-2 border-dashed border-border px-12 py-10 rounded-2xl">
         <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
         <img 
-          src="/monk.png" 
+          src="/monk.webp" 
           alt="Loading..." 
           className="w-20 h-20 object-contain" 
         />

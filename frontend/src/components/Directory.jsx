@@ -514,7 +514,7 @@ const getGradeBadgeClass = useCallback((grade) => {
 
 
   if (loadindir) {
-    return (<DirectorySkeleton></DirectorySkeleton>)}
+    return (<DirectorySkeleton/>);}
   if (loading) {
     return (
       <div className="w-full h-screen flex items-center justify-center bg-background">
