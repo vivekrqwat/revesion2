@@ -1,34 +1,4 @@
-// Check if current user owns the directory
-  const isOwner = (dirUid) => {
-    return user && user._id === dirUid;
-  };
-
-  // Upvote note
-  const upvoteNote = async (e, noteId, dirId) => {
-    e.stopPropagation();
-    try {
-      const res = await axios.post(
-        `${API}/apii/note/upvote/${noteId}`,
-        {},
-        { withCredentials: true }
-      );
-      
-      // Update local state
-      setNotesMap((prev) => ({
-        ...prev,
-        [dirId]: prev[dirId].map((note) =>
-          note._id === noteId
-            ? { ...note, upvotes: res.data.upvotes, hasUpvoted: res.data.hasUpvoted }
-            : note
-        ),
-      }));
-      
-      toast.success(res.data.message || 'Upvoted successfully');
-    } catch (e) {
-      console.error('Error upvoting note:', e);
-      toast.error('Failed to upvote');
-    }
-  };import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import { UserStore } from '../store/Userstroe';
@@ -62,7 +32,7 @@ function AllDir() {
   const [expandedDir, setExpandedDir] = useState(null);
   const [notesMap, setNotesMap] = useState({});
   const [loadingNotes, setLoadingNotes] = useState({});
-    const { id } = useParams();
+  const { id } = useParams();
 
   // Fetch all public directories
   const fetchAllDirectories = async () => {
@@ -83,8 +53,9 @@ function AllDir() {
       setLoading(false);
     }
   };
-  //upvote dir
-   const upvoteDirectory = async (e, dirId) => {
+
+  // Upvote directory
+  const upvoteDirectory = async (e, dirId) => {
     e.stopPropagation();
     try {
       const res = await axios.post(
@@ -93,7 +64,6 @@ function AllDir() {
         { withCredentials: true }
       );
       
-      // Update local state for directories
       setDirectories((prev) =>
         prev.map((dir) =>
           dir._id === dirId
@@ -102,7 +72,6 @@ function AllDir() {
         )
       );
       
-      // Also update filtered directories
       setFilteredDirs((prev) =>
         prev.map((dir) =>
           dir._id === dirId
@@ -110,8 +79,6 @@ function AllDir() {
             : dir
         )
       );
-      
-    //   toast.success(res.data.message || 'Upvoted successfully');
     } catch (e) {
       console.error('Error upvoting directory:', e);
       toast.error('Failed to upvote directory');
@@ -143,12 +110,13 @@ function AllDir() {
     }
   };
 
-  //check leve
+  // Get difficulty level from grade
   const getLevel = (grade) => {
-  if (grade === "green") return "Beginner";
-  if (grade === "red") return "Advanced";
-  return "Intermediate";
-};
+    if (grade === "green") return "Beginner";
+    if (grade === "red") return "Advanced";
+    return "Intermediate";
+  };
+
   // Check if current user owns the directory
   const isOwner = (dirUid) => {
     return user && user._id === dirUid;
@@ -190,15 +158,15 @@ function AllDir() {
     switch (grade) {
       case 'green':
       case 'Green':
-        return 'bg-green-100 text-green-800';
+        return 'bg-green-500/10 text-green-600';
       case 'red':
       case 'Red':
-        return 'bg-red-100 text-red-800';
+        return 'bg-red-500/10 text-red-600';
       case 'yellow':
       case 'Yellow':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-yellow-500/10 text-yellow-600';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gray-500/10 text-gray-600';
     }
   };
 
@@ -219,229 +187,176 @@ function AllDir() {
   };
 
   if (loading) {
-    return (
-      <DirectorySkeleton></DirectorySkeleton>
-    );
+    return <DirectorySkeleton />;
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted p-4 sm:p-6 md:p-8">
+    <div className="min-h-screen bg-[var(--bg)] text-[var(--color-text)] p-4 sm:p-6 md:p-8 transition-colors duration-300">
       <div className="max-w-6xl mx-auto space-y-6">
         {/* Header */}
         <div className="space-y-2">
-          <h1 className="text-3xl sm:text-4xl font-bold text-foreground">Public Directories/Reading AREA</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-3xl sm:text-4xl font-bold text-[var(--color-text)]">
+            Public Directories/Reading AREA
+          </h1>
+          <p className="text-[var(--muted)]">
             Explore and learn from public directories shared by the community
           </p>
         </div>
 
         {/* Search Bar */}
-        <Card className="bg-card border-border">
-          <CardContent className="p-3">
-            <Input
-              placeholder="Search directories by name or description..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="bg-muted border-border"
-            />
-          </CardContent>
-        </Card>
+        <div className="bg-[var(--color-card)] border border-[var(--border)] rounded-lg p-3">
+          <Input
+            placeholder="Search directories by name or description..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="bg-[var(--bg)] border-[var(--border)] text-[var(--color-text)] placeholder-[var(--muted)]"
+          />
+        </div>
 
         {/* Results Count */}
-        <div className="text-sm text-muted-foreground">
+        <div className="text-sm text-[var(--muted)]">
           Showing {filteredDirs.length} of {directories.length} directories
         </div>
 
         {/* Directories Grid */}
         {filteredDirs.length > 0 ? (
           <div className="space-y-4">
-            {filteredDirs.filter((id)=>id.isPublic==true).map((dir) => (
-
-
-              <Card
+            {filteredDirs.filter((id) => id.isPublic == true).map((dir) => (
+              <div
                 key={dir._id}
-                className="bg-card border-border hover:border-primary/50 transition-all duration-200 overflow-hidden"
+                className="bg-[var(--color-card)] border border-[var(--border)] hover:border-[var(--primary)]/50 transition-all duration-200 overflow-hidden rounded-lg"
               >
-                <CardContent className="p-0">
-                  {/* Directory Header */}
-                  <div className="p-5 border-b border-border/50">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex gap-4 flex-1 min-w-0">
-                        <div className={`w-4 h-4 rounded-full flex-shrink-0 mt-1 ${getGradeIndicator(dir.grade)}`} />
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <h3 className="text-lg font-semibold text-foreground truncate">
-                              {dir.Dirname}
-                            </h3>
-                            <Badge className={getGradeColor(dir.grade)}>
-                                {getLevel(dir.grade)}
+                {/* Directory Header */}
+                <div className="p-5 border-b border-[var(--border)]/50">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex gap-4 flex-1 min-w-0">
+                      <div
+                        className={`w-4 h-4 rounded-full flex-shrink-0 mt-1 ${getGradeIndicator(
+                          dir.grade
+                        )}`}
+                      />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <h3 className="text-lg font-semibold text-[var(--color-text)] truncate">
+                            {dir.Dirname}
+                          </h3>
+                          <Badge className={getGradeColor(dir.grade)}>
+                            {getLevel(dir.grade)}
+                          </Badge>
+                          {isOwner(dir.uid) && (
+                            <Badge variant="outline" className="bg-blue-500/10 text-blue-600 border-blue-500/20">
+                              <Lock className="w-3 h-3 mr-1" />
+                              Your Directory
                             </Badge>
-                            {isOwner(dir.uid) && (
-                              <Badge variant="outline" className="bg-blue-500">
-                                <Lock className="w-3 h-3 mr-1" />
-                                Your Directory
-                              </Badge>
-                            )}
-                          </div>
-                          <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
-                            {dir.desc}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Action Buttons */}
-                      <div className="flex gap-2 flex-shrink-0">
-                        {/* {isOwner(dir.uid) && (
-                          <>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="text-blue-500 hover:text-blue-600 hover:bg-blue-500/10"
-                            >
-                              <Edit2 className="w-4 h-4" />
-                            </Button>
-                            <AlertDialog>
-                              <AlertDialogTrigger asChild>
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  className="text-red-500 hover:text-red-600 hover:bg-red-500/10"
-                                >
-                                  <Trash2 className="w-4 h-4" />
-                                </Button>
-                              </AlertDialogTrigger>
-                              <AlertDialogContent className="bg-card border-border">
-                                <AlertDialogTitle>Delete Directory</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                  Are you sure you want to delete "{dir.Dirname}"? This action cannot be undone.
-                                </AlertDialogDescription>
-                                <div className="flex gap-3 justify-end">
-                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                  <AlertDialogAction
-                                    onClick={() => deleteDirectory(dir._id)}
-                                    className="bg-red-600 hover:bg-red-700"
-                                  >
-                                    Delete
-                                  </AlertDialogAction>
-                                </div>
-                              </AlertDialogContent>
-                            </AlertDialog>
-                          </>
-                        )} */}
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => fetchNotesForDir(dir._id)}
-                          className="text-primary hover:bg-primary/10"
-                        >
-                          {loadingNotes[dir._id] ? (
-                            <span className="animate-spin">⟳</span>
-                          ) : (
-                            <ChevronDown
-                              className={`w-4 h-4 transition-transform duration-300 ${
-                                expandedDir === dir._id ? 'rotate-180' : ''
-                              }`}
-                            />
                           )}
-                        </Button>
+                        </div>
+                        <p className="text-sm text-[var(--muted)] mt-2 line-clamp-2">
+                          {dir.desc}
+                        </p>
                       </div>
                     </div>
 
-                    {/* Meta Info */}
-                    <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground">
-                      <span>{dir.topic?.length || 0} notes</span>
-                      <span>
-                        {new Date(dir.createdAt).toLocaleDateString('en-US', {
-                          year: 'numeric',
-                          month: 'short',
-                          day: 'numeric',
-                        })}
-                      </span>
+                    {/* Action Buttons */}
+                    <div className="flex gap-2 flex-shrink-0">
                       <Button
                         variant="ghost"
                         size="sm"
-                        className={`ml-auto px-2 ${
-                          dir.hasUpvoted
-                            ? 'text-blue-500 bg-blue-500/10'
-                            : 'text-muted-foreground hover:text-blue-500'
-                        }`}
-                       onClick={(e) => upvoteDirectory(e, dir._id)}
+                        onClick={() => fetchNotesForDir(dir._id)}
+                        className="text-[var(--primary)] hover:bg-[var(--primary)]/10"
                       >
-                        <ThumbsUp className="w-3 h-3 mr-1" />
-                        {dir.upvotes || 0}
+                        {loadingNotes[dir._id] ? (
+                          <span className="animate-spin">⟳</span>
+                        ) : (
+                          <ChevronDown
+                            className={`w-4 h-4 transition-transform duration-300 ${
+                              expandedDir === dir._id ? 'rotate-180' : ''
+                            }`}
+                          />
+                        )}
                       </Button>
                     </div>
                   </div>
 
-                  {/* Expanded Notes Section */}
-                  {expandedDir === dir._id && notesMap[dir._id] && (
-                    <div className="bg-muted/30 p-4 space-y-2 border-t border-border/50">
-                      {notesMap[dir._id].length > 0 ? (
-                        notesMap[dir._id].map((note) => (
-                                    <div
-                                      key={note._id}
-                                      className="flex items-start gap-3 bg-card p-3 rounded-md hover:bg-muted/50 transition-all cursor-pointer border border-border/50"
-                                      onClick={() => {
-                                        localStorage.setItem("noteid", note._id);
-                                        navigate(`/notes/${id}`);
-                            }}
-                          >
-                            <div className="mt-1 flex-shrink-0">
-                              <span className={`w-3 h-3 rounded block ${getGradeIndicator(note.grade)}`} />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <p className="font-semibold text-sm text-foreground group-hover:text-primary transition-colors truncate">
-                                {note.heading}
-                              </p>
-                              <p className="text-xs text-muted-foreground line-clamp-2 mt-1">
-                                {note.desc}
-                              </p>
-                            </div>
-                            {/* <div className="flex items-center gap-2 flex-shrink-0 ml-2"> */}
-                              {/* <Button
-                                variant="ghost"
-                                size="sm"
-                                className={`${
-                                  note.hasUpvoted
-                                    ? 'text-blue-500 bg-blue-500/10'
-                                    : 'text-muted-foreground hover:text-blue-500'
-                                }`}
-                                onClick={(e) => upvoteNote(e, note._id, dir._id)}
-                              > */}
-                                {/* <ThumbsUp className="w-4 h-4 mr-1" /> */}
-                                {/* {note.upvotes || 0} */}
-                              {/* </Button> */}
-                              {/* {!isOwner(dir.uid) ? (
-                                <Eye className="w-4 h-4 text-muted-foreground" />
-                              ) : (
-                                <span className="text-xs text-primary font-medium">Edit</span>
-                              )} */}
-                            {/* </div> */}
+                  {/* Meta Info */}
+                  <div className="flex items-center gap-4 mt-3 text-xs text-[var(--muted)]">
+                    <span>{dir.topic?.length || 0} notes</span>
+                    <span>
+                      {new Date(dir.createdAt).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                      })}
+                    </span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className={`ml-auto px-2 ${
+                        dir.hasUpvoted
+                          ? 'text-blue-500 bg-blue-500/10'
+                          : 'text-[var(--muted)] hover:text-blue-500'
+                      }`}
+                      onClick={(e) => upvoteDirectory(e, dir._id)}
+                    >
+                      <ThumbsUp className="w-3 h-3 mr-1" />
+                      {dir.upvotes || 0}
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Expanded Notes Section */}
+                {expandedDir === dir._id && notesMap[dir._id] && (
+                  <div className="bg-[var(--border)]/10 p-4 space-y-2 border-t border-[var(--border)]/50">
+                    {notesMap[dir._id].length > 0 ? (
+                      notesMap[dir._id].map((note) => (
+                        <div
+                          key={note._id}
+                          className="flex items-start gap-3 bg-[var(--color-card)] p-3 rounded-md hover:bg-[var(--border)]/20 transition-all cursor-pointer border border-[var(--border)]/50"
+                          onClick={() => {
+                            localStorage.setItem("noteid", note._id);
+                            navigate(`/notes/${id}`);
+                          }}
+                        >
+                          <div className="mt-1 flex-shrink-0">
+                            <span
+                              className={`w-3 h-3 rounded block ${getGradeIndicator(
+                                note.grade
+                              )}`}
+                            />
                           </div>
-                        ))
-                      ) : (
-                        <p className="text-center text-sm text-muted-foreground py-4">
-                          No notes in this directory
-                        </p>
-                      )}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-semibold text-sm text-[var(--color-text)] hover:text-[var(--primary)] transition-colors truncate">
+                              {note.heading}
+                            </p>
+                            <p className="text-xs text-[var(--muted)] line-clamp-2 mt-1">
+                              {note.desc}
+                            </p>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-center text-sm text-[var(--muted)] py-4">
+                        No notes in this directory
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
             ))}
           </div>
         ) : (
-          <Card className="bg-card border-border">
-            <CardContent className="flex flex-col items-center justify-center py-16">
+          <div className="bg-[var(--color-card)] border border-[var(--border)] rounded-lg">
+            <div className="flex flex-col items-center justify-center py-16">
               <div className="text-5xl mb-4">📂</div>
-              <p className="text-lg font-semibold text-foreground mb-2">No directories found</p>
-              <p className="text-muted-foreground text-center">
+              <p className="text-lg font-semibold text-[var(--color-text)] mb-2">
+                No directories found
+              </p>
+              <p className="text-[var(--muted)] text-center">
                 {searchTerm
                   ? 'Try adjusting your search terms'
                   : 'No public directories available yet'}
               </p>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         )}
       </div>
     </div>
