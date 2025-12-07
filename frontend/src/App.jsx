@@ -17,6 +17,7 @@ import { ToastContainer } from 'react-toastify';
 import AllDir from '@/components/AllDir.jsx';
 import Alluser from '@/components/Alluser.jsx';
 import VoiceNoteHub from './components/VoiceNoteHub.jsx';
+import VAI from '@/components/VAI.jsx';
 
 // export default function App() {
 //   const { user, checkAuth, initializeUser, loading } = UserStore();
@@ -205,11 +206,13 @@ export default function App() {
                 <Route path="/notes/:id" element={<Notes />} />
                 <Route path="/alldir" element={<AllDir />} />
                 <Route path="/allusers" element={<Alluser />} />
+          
                 
               <Route path="/profile/:id" element={<ProfilePage />} />
+                    <Route path="t" element={<VAI/>}/>
               </Route>
 
-              <Route path="/ai" element={<VoiceNoteHub />} />
+              
             </>
           )}
 
