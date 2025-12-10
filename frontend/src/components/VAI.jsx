@@ -140,14 +140,14 @@ export default function VAI() {
             disabled={loading}
             className="bg-[var(--primary)] hover:bg-[var(--primary)]/90 disabled:opacity-50 disabled:cursor-not-allowed text-white py-2 rounded-lg font-semibold transition-all duration-300"
           >
-            {loading && currentAction === "explain" ? "Loading..." : "📖 Explain Topic"}
+            explain
           </button>
           <button
             onClick={() => handleAction("qa")}
             disabled={loading}
             className="bg-[var(--secondary)] hover:bg-[var(--secondary)]/90 disabled:opacity-50 disabled:cursor-not-allowed text-white py-2 rounded-lg font-semibold transition-all duration-300"
           >
-            {loading && currentAction === "qa" ? "Loading..." : "❓ Generate Q&A"}
+            Q&A
           </button>
         </div>
 
