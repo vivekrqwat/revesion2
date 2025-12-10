@@ -7,7 +7,7 @@ import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognitio
 import Speech from './Speech.jsx';
 import { UserStore } from '../store/Userstroe.jsx';
 import CodeEditor from './CodeEditor.jsx';
-import VAI from './Vai.jsx'; // Import Vai component
+import VAI from './VAI.jsx'; // Import Vai component
 import { toast } from 'react-toastify';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
