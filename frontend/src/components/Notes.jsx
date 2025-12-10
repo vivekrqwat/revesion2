@@ -7,15 +7,17 @@ import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognitio
 import Speech from './Speech.jsx';
 import { UserStore } from '../store/Userstroe.jsx';
 import CodeEditor from './CodeEditor.jsx';
+import VAI from './Vai.jsx'; // Import Vai component
 import { toast } from 'react-toastify';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Trash2, Copy, Maximize2, Download, DownloadCloudIcon, Mic, VolumeX } from 'lucide-react';
+import { Trash2, Copy, Maximize2, Download, DownloadCloudIcon, Mic, VolumeX, Sparkles } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
   DialogTrigger,
+  DialogTitle,
 } from '@/components/ui/dialog';
 import {
   AlertDialog,
@@ -56,6 +58,7 @@ export default function Notes() {
   const [isOwner, setIsOwner] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredNotes, setFilteredNotes] = useState([]);
+  const [showVaiModal, setShowVaiModal] = useState(false); // New state for Vai modal
   const [formData, setFormData] = useState({
     heading: '',
     desc: '',
@@ -635,6 +638,31 @@ export default function Notes() {
             </div>
           </AlertDialogContent>
         </AlertDialog>
+
+        {/* Floating AI Button at Bottom Left */}
+        <TooltipProvider delayDuration={200}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => setShowVaiModal(true)}
+                className="fixed bottom-8 left-8 w-14 h-14 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg hover:shadow-xl hover:scale-110 transition-all duration-300 flex items-center justify-center group"
+              >
+                <Sparkles size={24} className="group-hover:rotate-180 transition-transform duration-300" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="right">
+              <p>Ask AI Assistant</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+
+        {/* VAI Modal */}
+        <Dialog open={showVaiModal} onOpenChange={setShowVaiModal}>
+          <DialogContent className="max-w-2xl h-[80vh] overflow-y-auto bg-[var(--color-card)] border-[var(--border)]">
+            <DialogTitle className="sr-only">AI Learning Assistant</DialogTitle>
+            <VAI />
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
